@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../main_template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <ui:define name="top">
+        <p><h2>Marking Form</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+          <p:panel header="Step 2/2" styleClass="panelMarkFormView">
+                <h:form>
+                    <h:panelGrid columns="1" styleClass="gridMarkFormView">
+
+                        <h:panelGroup styleClass="groupMarkFormView">
+                            <h:outputText value="Value of the mark before adjustment: " styleClass="bold_outputMarkFormView"/>
+                            <h:outputText value="#valueMark"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup styleClass="groupMarkFormView">
+                            <h:outputText value="Adjustment:" styleClass="bold_outputMarkFormView"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="Comment of the adjustment:" styleClass="bold_outputMarkFormView"/>
+                        <h:inputTextarea cols="60" rows="5"/>
+
+                        <h:panelGroup styleClass="groupMarkFormView">
+                            <h:outputText value="Value of the mark after adjustment: " styleClass="bold_outputMarkFormView"/>
+                            <h:outputText value="#valueMark"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Back" accesskey="b" action="toMarkFormView1" immediate="true"/>
+                    <p:commandButton value="Save" accesskey="a" action="ADD_HERE" immediate="true"/>
+                    <p:commandButton value="Submit" accesskey="u" action="ADD_HERE" immediate="true"/>
+                </h:form>
+          </p:panel>
+    </ui:define>
+
+</ui:composition>

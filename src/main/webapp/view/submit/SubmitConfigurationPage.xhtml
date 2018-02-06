@@ -1,0 +1,98 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Submission Configuration</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel id="configTable" header="List of sessions of projects submission">
+            <h:form>
+                <p:dataTable value="#{scc.items}" var="submitConf" paginator="true" rows="30"
+                             selectionMode="single" selection="#{scc.current}" rowKey="#{submitConf.id}">
+                    
+                    <p:column sortBy="#{submitConf.id}">
+                        <f:facet name="header">
+                            <h:outputText value="Code"/>
+                        </f:facet>
+                        <h:outputText value="#{submitConf.id}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.descriptionSubmitConfig}">
+                        <f:facet name="header">
+                            <h:outputText value="Description"/>
+                        </f:facet>
+                        <h:outputText value="#{submitConf.descriptionSubmitConfig}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.uniti.idunitinstance}">
+                        <f:facet name="header">
+                            <h:outputText value="Unit" />
+                        </f:facet>
+                        <h:outputText value="#{submitConf.uniti.idunitinstance} - #{submitConf.uniti.unit.unitcode} - #{submitConf.uniti.unit.unittitle}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.normalDeadline}">
+                        <f:facet name="header">
+                            <h:outputText value="Duration" />
+                        </f:facet>
+                        <h:outputText value="#{submitConf.openingDate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=" - "/>
+                        <h:outputText value="#{submitConf.normalDeadline}">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=" (max "/>
+                        <h:outputText value="#{submitConf.finalDeadline}">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=")"/>
+                    </p:column>
+
+                    <f:facet name="footer"> 
+                        <p:commandButton value="Generate report" icon="ui-icon-document" onclick="generateReport.show()">
+                            <f:setPropertyActionListener value="#{scc.current}" target="#{userBean.tempSubmitConf}"/>
+                        </p:commandButton>    
+                        <p:commandButton value="Edit" icon="ui-icon-pencil" action="toSubmitConfEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{scc.current}" target="#{userBean.tempSubmitConf}"/>
+                        </p:commandButton>
+                        <p:commandButton value="Copy" icon="ui-icon-copy" action="toSubmitConfEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{null}" target="#{scc.current.id}"/>
+                            <f:setPropertyActionListener value="#{scc.current}" target="#{userBean.tempSubmitConf}"/>
+                        </p:commandButton>
+                        <p:commandButton value="New" icon="ui-icon-plus" action="toSubmitConfEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{null}" target="#{userBean.tempSubmitConf}"/>
+                        </p:commandButton>
+                        <p:commandButton id="showDeleteDialogButton" value="Delete" icon="ui-icon-trash" update=":confirmDeleteDialog" oncomplete="confirmationDelete.show()"/>
+                    </f:facet>             
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+        
+        <h:form>            
+            <p:dialog header="Report content" modal="true" widgetVar="generateReport">
+                <h:panelGrid columns="2">
+                    <p:selectBooleanCheckbox id="checkBoxStudentSubmit" value="a" /><h:outputLabel for="checkBoxStudentSubmit" value="Generate list of students who have submitted"/>
+                    <p:selectBooleanCheckbox id="checkBoxStudentNotSubmit" value="b" /><h:outputLabel for="checkBoxStudentNotSubmit" value="Generate list of students who have NOT submitted"/>
+                    <p:selectBooleanCheckbox id="checkBoxStudentSubmitLate" value="c" /><h:outputLabel for="checkBoxStudentSubmitLate" value="Generate list of students who have submitted after the deadline"/>
+                    <f:facet name="footer">
+                        <p:commandButton value="Generate Report" actionListener="#{scc.generateRapport}" oncomplete="generateReport.hide()"/>
+                        <p:commandButton value="Cancel" icon="ui-icon-cancel" onclick="generateReport.hide()"/>
+                    </f:facet>
+                </h:panelGrid>
+            </p:dialog>  
+        </h:form>  
+        
+        <p:confirmDialog id="confirmDeleteDialog" message="Are you sure you want to delete the configuration n°#{scc.current.id} ?" header="configuration deletion" severity="alert" widgetVar="confirmationDelete">  
+            
+            <p:commandButton id="confirm" value="Delete" icon="ui-icon-trash" update=":configTable" oncomplete="confirmationDelete.hide()" actionListener="#{scec.delete(scc.current)}" />  
+            <p:commandButton id="decline" value="Cancel" icon="ui-icon-cancel" onclick="confirmationDelete.hide()" type="button" />   
+        
+        </p:confirmDialog>
+        
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,32 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="top">
+        <p><h2>Error Page</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel>
+            <h:form id="login" title="Login error" prependId="false" onsubmit="document.getElementById('login').action='j_security_check';">
+                <p>Login Failed</p>
+
+                <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
+                    <h:outputLabel for="j_username">Username:</h:outputLabel>
+                    <h:inputText id="j_username" required="true" tabindex="1"/>
+                    <h:outputLabel for="j_password">Password:</h:outputLabel>
+                    <h:inputSecret id="j_password" required="true" tabindex="2"/>
+                    <h:commandButton value="Login"/>
+                </h:panelGrid>
+            </h:form>
+        </p:panel>
+        <p:panel>
+            <h:form>
+                <h:link value="Lost password?" outcome="toLostPass"/>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
+
+

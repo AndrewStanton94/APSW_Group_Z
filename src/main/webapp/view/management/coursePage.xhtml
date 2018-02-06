@@ -1,0 +1,401 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="global">
+            <p:panel id="courseList" rendered="#{couc.opDisplayList}" header="List of Courses">
+                <h:form prependId="false">
+                    <p:commandButton value="New Course" update=":global" actionListener="#{couc.addCourse}"/>
+                    <br/><br/>
+                    <p:dataTable  value="#{couc.items}" var="course" paginator="true" rows="30" selection="#{couc.current}" selectionMode="single" rowKey="#{course.coursecode}">
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Code" />
+                            </f:facet>
+                            <p:commandLink value="#{course.coursecode}" update=":global" actionListener="#{couc.courseDetails}">
+                                <f:setPropertyActionListener target="#{couc.current}" value="#{course}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Name" />
+                            </f:facet>
+                            <h:outputText value="#{course.coursename}"/>
+                        </p:column>
+
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{couc.editCourse}" update=":global">
+                                <f:setPropertyActionListener target="#{couc.current}" value="#{course}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="New Course Instance" update=":global" actionListener="#{couc.addCourseInstance}"/>
+                    
+                    <br/><br/>
+                    <p:dataTable id="courseInstanceTable"  value="#{couc.courseInstances}" var="courseinstance" paginator="true" rows="30" selectionMode="single" rowKey="#{courseinstance.idcourseinstance}">
+                        <p:column sortBy="#{courseinstance.idcourseinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                             <h:outputText value="#{courseinstance.idcourseinstance}"/>
+                       
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.courseinstancename}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.courseinstancename}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.academicyear.academicYearName}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.course.coursecode}">
+                            <f:facet name="header">
+                                <h:outputText value="Course" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{courseinstance.course.coursecode} "/>
+                            <h:outputText value="#{courseinstance.course.coursename}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.unitinstances.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit Instances" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.unitinstances.size()}"/>
+                        </p:column>
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{couc.editCourseInstance}" update=":global">
+                                <f:setPropertyActionListener target="#{cic.current}" value="#{courseinstance}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+            </p:panel>
+
+          <!---Course Instance panels-->
+            
+            <p:panel id="addCourseinstance" header="Add a new Course Instance" rendered="#{couc.opAddCourseInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{cic.newItem.courseinstancename}" required="true"/>
+                        <h:outputLabel style="font-weight: bold" value="Academic Year"/>
+                        <h:selectOneMenu value="#{cic.academicyear}" >
+                            <f:selectItems
+                                value="#{ayc.items}"
+                                var="ay"
+                                itemValue="#{ay.idacademicyear}"
+                                itemLabel="#{ay.academicYearName}"/>
+                        </h:selectOneMenu>
+                        
+                         <h:outputLabel style="font-weight: bold" value="Course Code"/> 
+                         <h:outputText value="#{couc.current.coursecode}" />
+                           <h:outputLabel style="font-weight: bold" value="Course Name"/> 
+                         <h:outputText value="#{couc.current.coursename}" />
+                    </h:panelGrid>
+                    <br/>
+       
+                    <p:commandButton value="Create" action="#{cic.doAdd}" actionListener="#{couc.displayList}" update=":global">
+                        <f:setPropertyActionListener target="#{cic.newItem.course}"  value="#{couc.current}"/>
+                    </p:commandButton>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{couc.displayList}" render="global"/>
+                    </p:button>
+          
+
+                </h:form>
+            </p:panel>
+            
+          <p:panel header="#{cic.current.courseinstancename}" rendered="#{couc.opEditCourseInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="N°"/><h:outputText value="#{cic.current.idcourseinstance}"/>
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{cic.current.courseinstancename}"/>
+
+                    </h:panelGrid>
+                    <p:dataTable value="#{couc.items}" var="course" paginator="true" selectionMode="single" rows="30" selection="#{cic.current.course}" paginatorPosition="bottom" rowKey="#{course.coursecode}}">
+                        <f:facet name="header">
+                            <h:outputText value="Choose a Course" />
+                        </f:facet>
+                        <p:column sortBy="#{course.coursecode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <h:outputText value="#{course.coursecode}"/>
+                        </p:column>
+                        <p:column sortBy="#{course.coursename}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{course.coursename}"/>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:commandButton value="Save" action="#{cic.doEdit}" actionListener="#{couc.displayList}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{couc.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+              </p:panel>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+          
+            <p:panel id="addCourse" header="Add a new Course" rendered="#{couc.opAddCourse}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/>
+                        <p:inputText value="#{couc.newItem.coursecode}">
+                            <f:validateRegex pattern="^[a-zA-Z0-9]{6}$" />
+                        </p:inputText>
+                        <h:outputLabel style="font-weight: bold" value="Name"/><p:inputText value="#{couc.newItem.coursename}" required="true"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Create" action="#{couc.doAdd}"  actionListener="#{couc.displayList}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{couc.displayList}" render="global"/>
+                    </p:button>
+                    <p:growl/>
+                </h:form>
+            </p:panel>
+            <p:panel header="#{couc.current.coursename}" rendered="#{couc.opCourseDetails}">
+                <h:form prependId="false">
+                    <br/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><h:outputText value="#{couc.current.coursecode}"/>
+                        <h:outputLabel style="font-weight: bold" value="Name"/><h:outputText value="#{couc.current.coursename}"/>
+                    </h:panelGrid>
+                    <br/>
+                    <p:commandButton value="Back" actionListener="#{couc.displayList}" update=":global"/>
+                    <p:commandButton value="Edit" actionListener="#{couc.editCourse}" update=":global"/>
+                    <br /><br/>
+                    <p:panel>
+                        <p:dataTable value="#{couc.current.courseinstanceList}" var="courseinstance" paginator="true" rows="20" paginatorPosition="bottom">
+                            <f:facet name="header">
+                                <h:outputText value="List of Course Instances Using this Course" />
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{courseinstance.courseinstancename}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Academic Year
+                                </f:facet>
+                                <h:outputText value="#{courseinstance.academicyear.academicYearName}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:panel>
+            <p:panel header="#{couc.current.coursename}" rendered="#{couc.opEditCourse}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><h:outputText value="#{couc.current.coursecode}"/>
+                        <h:outputLabel style="font-weight: bold" value="Name"/><p:inputText value="#{couc.current.coursename}"/>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Save" action="#{couc.doEdit}" actionListener="#{couc.courseDetails}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{couc.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+            </p:panel>
+
+
+        </h:panelGroup>
+
+        <!--
+                        <h:form prependId="false">
+                            <fieldset><legend>Courses</legend>
+                                <h:dataTable value="#{couc.items}" var="course" border="1" rowkey="#{course.coursecode}}}>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Code" />
+                                        </f:facet>
+                                        <h:outputText value="#{course.coursecode}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{course.coursename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Cohorts">
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohorts</legend>
+                                <h:dataTable value="#{cohc.items}" var="cohort" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Label" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.cohortlabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration end" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Projects start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Project stop" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="CourseInstances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Course instances</legend>
+                                <h:dataTable value="#{courseic.items}" var="courseinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.courseinstancename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Academic year" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.academicyear.startdate}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy /"/>
+                                        </h:outputText>
+                                        <h:outputText value="#{courseinstance.academicyear.enddate}">
+                                            <f:convertDateTime pattern=" MMM dd, yyyy"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Course" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.course.coursecode} "/>
+                                        <h:outputText value="#{courseinstance.course.coursename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Course Instances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Course instances</legend>
+                                <h:dataTable value="#{cic.items}" var="courseinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Name" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.courseinstancename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Level" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.courselevel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Course" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.course.coursecode} #{courseinstance.course.coursename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+
+                        </h:form>
+        -->
+    </ui:define>
+</ui:composition>

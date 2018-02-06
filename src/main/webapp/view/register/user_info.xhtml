@@ -1,0 +1,24 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+				>
+
+    <ui:define name="content">
+		<p:panel header="#{pac.current.username}" >
+			<ui:include src="/view/register/components/UserGeneralInfo.xhtml" /> 
+			<ui:include src="/view/register/components/UserEmail.xhtml" />
+			<ui:include src="/view/register/components/UserPass.xhtml" />
+			<ui:include src="/view/register/components/UnitStudentIn.xhtml" />
+			<ui:include src="/view/register/components/RoleManagement.xhtml" />
+			<h:panelGroup rendered="#{pac.currentIsExternal()}">
+				<ui:include src="/view/register/components/Organisation.xhtml" />
+			</h:panelGroup>
+			<ui:define name="messages" /> 
+		</p:panel>
+    </ui:define>
+
+	<ui:define name="messages" />
+</ui:composition>

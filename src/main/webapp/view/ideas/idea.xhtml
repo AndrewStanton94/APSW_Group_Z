@@ -1,0 +1,91 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="top">
+        <p><h2>Idea Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel header="Submit a Project Idea">
+            <h:form id="SumitProjectidea">
+                <h:panelGrid id="panelProjectidea" columns="2" width="60%" cellspacing="5">
+                    <h:outputLabel value="Your Status :" />
+                    <h:inputText id="CurrentUserStatus" value="#{isc.currentUserStatus}" size="70" disabled="true"/>
+
+                    <h:outputLabel value="Idea Title :"/>
+                    <h:inputText id="ideatitle" value="#{isc.newItem.ideatitle}" size="70">
+                        <h:outputText styleClass="error" dir="LTR" id="ideatitleError"/>
+                    </h:inputText>
+
+                    <h:outputLabel value="Aims of the Project :"/>
+                    <h:inputText id="aims" value="#{isc.newItem.aims}" size="70">
+                        <h:outputText styleClass="error" dir="LTR" id="aimsError"/>
+                    </h:inputText>
+
+                    <h:outputLabel value="Academic Question of the Project :"/>
+                    <h:inputText id="academicquestion" value="#{isc.newItem.academicquestion}" size="70">
+                        <h:outputText styleClass="error" dir="LTR" id="academicquestionError"/>
+                    </h:inputText>
+
+                    <h:outputLabel value="Project Type :"/>      
+                    <p:dataTable value="#{isc.kindList}" var="kind" rowKey="#{kind.idkind}" selection="#{isc.selectedKind}">                       
+
+                        <p:column selectionMode="multiple" />
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Type" />
+                            </f:facet>
+                            <h:outputText value="#{kind.kindname}"/>
+
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:outputLabel value="Project Level :"/> 
+
+                    <p:dataTable value="#{isc.courseLevelList}" var="level" rowKey="#{level.id}" selection="#{isc.selectedCourseLevel}" >
+                        <p:column selectionMode="multiple"/>
+
+                        <p:column sortBy="#{level.name}">
+                            <f:facet name="header">
+                                <h:outputText value="Level" />
+                            </f:facet>
+                            <h:outputText value="#{level.name}"/>
+
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:outputLabel value="Description (Why are they doing?, What research are they going to do?, Do they have a specific client/audience for the project?) :"/>
+                    <h:inputTextarea id="description" cols="73" rows="10" value="#{isc.newItem.description}" required="true" requiredMessage="Description is empty">
+                        <f:validator validatorId="ideaDescriptionValidator"/>
+                        <f:ajax render="descriptionError"/>
+                    </h:inputTextarea>
+                    <h:message class="error" id="descriptionError" for="description"/>
+                </h:panelGrid>
+
+                <br/>
+                <c:if test="#{userBean.student == true || userBean.external == true}">
+                    <p:commandButton value="Next Step (Choose Supervisors)" action="#{isc.supervisorPage()}" />
+                </c:if>
+
+                <c:if test="#{userBean.staff == true || userBean.admin == true}">
+                    <h:panelGrid id="panelProjectStatusIdea" columns="2" width="60%" cellspacing="5">
+                        <h:outputLabel value="Idea status :"/>
+                        <h:selectOneMenu id="IdeaStatusListte" value="#{isc.staffFirstIdeaStatus}">                        
+                            <f:selectItems value="#{istc.ideaStatusList}" var="status" itemValue="#{status}" itemLabel="#{status.ideastatusname}"/><br />
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <br/><br/>
+                    <p:commandButton value="Submit Idea" action="#{isc.doAdd()}" >
+                        <f:setPropertyActionListener target="#{isc.supervisorUsername}" value="#{userBean.user}" />
+                    </p:commandButton>
+                </c:if>
+            </h:form>
+
+        </p:panel>
+    </ui:define>
+</ui:composition>

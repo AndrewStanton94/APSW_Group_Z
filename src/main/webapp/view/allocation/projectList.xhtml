@@ -1,0 +1,59 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="top">
+        <p><h2>Allocation</h2></p>
+    </ui:define>
+    
+    <ui:define name="content">
+        <p:panel header="Project List">
+            <h:form>
+                <p:dataTable id="AllocatedProjectList" value="#{projectListController.list}" var="project">
+                    <p:column headerText="Student" >
+                        <h:dataTable value="#{fpc.getStudentList(project)}" var="studentInProject" styleClass="datatable_noborder">
+                            <p:column>
+                                 <p:commandLink value="#{studentInProject.forename} #{studentInProject.surname}"
+                                                action="toUserInfo" >
+                                     <f:setPropertyActionListener value="#{studentInProject}" target="#{pac.current}" />
+                                 </p:commandLink>
+                            </p:column>
+                        </h:dataTable>
+                    </p:column>
+                    
+                    <p:column headerText="Title" style="text-align: center;">
+                        <h:commandLink rendered="#{userBean.staff || userBean.admin}" value="#{project.projecttitle}" action="toProjectDetails" >
+                            <f:setPropertyActionListener value="#{project}" target="#{fpc.current}" />
+                        </h:commandLink>
+                    </p:column>
+                    
+                    <p:column headerText="Related Staff" style="text-align: center;">
+                        <h:dataTable value="#{fpc.getStaffList(project)}"
+                                     var="spr" styleClass="datatable_noborder">
+                            <h:column>
+                                 <h:outputText value="#{spr.staffstatus.statusname}: " />
+                                 <h:commandLink value="#{spr.person.forename} #{spr.person.surname}"
+                                                action="toUserInfo" >
+                                     <f:setPropertyActionListener value="#{spr.person}" target="#{pac.current}" />
+                                 </h:commandLink>
+                            </h:column>
+                        </h:dataTable>
+                    </p:column>
+                    
+                    <p:column headerText="Status" style="text-align: center;">
+                        <h:outputText value="#{project.finalMarkStatus}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Planned Submission Date" style="text-align: center;">
+                        <h:outputText value="#{project.plannedsubmissiondate}">
+                            <f:convertDateTime pattern="dd MMM yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

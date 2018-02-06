@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="top">
+        <p><h2>External Examiner</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="#{examinerEditController.currentProject.projecttitle}">         
+            <h:form>
+                <p:dataTable value="#{projectListController.list}" var="project">
+                    <p:column>                           
+                        <f:facet name="header">Category</f:facet>
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header" >First Mark</f:facet> 
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header" >Second Mark</f:facet> 
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Third Mark</f:facet>
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Comments</f:facet>
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Mark</f:facet>
+                        <h:outputText value=""/>
+                    </p:column>
+                </p:dataTable>  
+                <h:panelGrid>
+                    <h:selectOneRadio id="SatisfiedFields" value="#{examinerEditController.satisfiedFields}">
+                        <f:selectItem itemLabel="Satisfied" itemValue="Satisfied" />
+                        <f:selectItem itemLabel="Dissatisfied" itemValue="Dissatisfied" />
+                    </h:selectOneRadio>
+                    <h:outputLabel value="Comments:"/>
+                    <h:inputTextarea id="SatisfiedComments" cols="60" rows="10"  value="#{examinerEditController.satisfiedComments}" />
+                    <h:commandButton value="Save" action="#{examinerEditController.doSave}"/>
+                </h:panelGrid>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <navigation-rule>
+        <from-view-id>/view/management/cohortManagement.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toDetails</from-outcome>
+            <to-view-id>/view/management/cohortDetails.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/cohortDetails.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitDetailsOld</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetails.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitinstancePage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUserInfo</from-outcome>
+            <to-view-id>/view/register/user_info.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitDetails</from-outcome>
+            <to-view-id>/view/management/unitDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitEdit</from-outcome>
+            <to-view-id>/view/management/unitEditPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitDetailsPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitEdit</from-outcome>
+            <to-view-id>/view/management/unitEditPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitInstanceDetails</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitInstanceEdit</from-outcome>
+            <to-view-id>/view/management/unitInstanceEditPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitEditPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitDetails</from-outcome>
+            <to-view-id>/view/management/unitDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitInstancePage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitInstanceDetails</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitInstanceEdit</from-outcome>
+            <to-view-id>/view/management/unitInstanceEditPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitInstanceDetailsPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitInstanceEdit</from-outcome>
+            <to-view-id>/view/management/unitInstanceEditPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitDetails</from-outcome>
+            <to-view-id>/view/management/unitDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/unitInstanceEditPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitInstanceDetails</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/courseinstancePage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitInstanceDetails</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/management/cohortPage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toUnitInstanceDetails</from-outcome>
+            <to-view-id>/view/management/unitInstanceDetailsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+</faces-config>

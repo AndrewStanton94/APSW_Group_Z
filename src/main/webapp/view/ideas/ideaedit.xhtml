@@ -1,0 +1,56 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Edit an idea</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="SumitProjectidea">
+            <fieldset>
+                <h:panelGrid id="panelProjectidea" columns="3" columnClasses="columnWidth">
+
+                    <h:outputLabel value="Your Status :"/><h:outputLabel id="CurrentUserStatus" value="#{iec.currentUserStatus}" />
+                    <br />
+                    <h:outputLabel value="Idea title :"/><h:inputText id="ideatitle" value="#{iec.currentidea.ideatitle}" />
+                    <br />
+                    <h:outputLabel value="Aims and objectives of the project :"/> <h:inputText id="aims" value="#{iec.currentidea.aims}" />
+                    <br />
+                    <h:outputLabel value="Academic question of the project :"/> <h:inputText id="academicquestion" value="#{iec.currentidea.academicquestion}"  />
+                    <br />
+                    <h:outputLabel value="Idea kind :"/><h:outputLabel id="IdeaKind" value="#{ilc.getIdeaKind(iec.currentidea)}" />
+                    <br />
+                    <h:outputLabel value="Idea status :"/><h:outputLabel id="IdeaStatus" value="#{iec.currentidea.ideastatus.ideastatusname}" rendered="#{!userBean.staff}" />
+                    <h:selectOneMenu id="IdeaStatusList" value="#{iec.currentidea.ideastatus}" rendered="#{userBean.staff}">                        
+                        <f:selectItems value="#{istc.ideaStatusList}" var="status" itemValue="#{status}" itemLabel="#{status.ideastatusname}"/><br />
+                    </h:selectOneMenu>
+                    <br />
+
+                </h:panelGrid>
+
+                <h:panelGrid id="panelDesc" columns="3" columnClasses="columnWidth">
+                    <h:outputLabel value="Description :"/>
+                    <h:inputTextarea id="description" cols="60" rows="10"  value="#{iec.currentidea.description}" />
+
+                </h:panelGrid>
+            </fieldset>
+            <fieldset>
+                <h:panelGrid id="panelChanges" columns="2" columnClasses="columnWidth">
+                    <h:outputLabel value="Changes Performed"/>
+                    <h:inputTextarea cols="40" rows="5"  value="#{iec.changes}" required="true"/>
+                    <h:outputLabel value="Reasons"/><h:inputText value="#{iec.reason}" required="true"/>
+                </h:panelGrid>
+                <br />
+            </fieldset>
+            <p:commandButton value="Save" action="#{iec.doEdit}"/>
+            <p:button value="Cancel" outcome="backDetails"/>
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

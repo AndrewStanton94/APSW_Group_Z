@@ -1,0 +1,114 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Submission Configuration</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel header="Configuration">
+            <h:form id="SubmitProject">
+                
+                <h3>General</h3>
+                <h:panelGrid class="infoPanel" columns ="3">
+                    
+                    <h:outputLabel for="description" value="Quick description : "/>
+                    <h:inputText id="description" value="#{scec.newItem.descriptionSubmitConfig}" required="true" requiredMessage="You must describe this configuration (a short phrase to quickly identify your configuration)." />
+                    <h:message styleClass="error" for="description"/>
+                    
+                    <h:outputLabel for="selectUnitInstance" value="Concerned Unit instance : "/>
+                    <h:selectOneMenu id="selectUnitInstance" value="#{scec.newItem.uniti}" required="true" requiredMessage="You must specify an artefact." rendered="#{scec.creationMode}">
+                        <f:selectItems value="#{unitIc.items}" var="unitInstance" itemValue="#{unitInstance}" itemLabel="#{unitInstance.idunitinstance} - #{unitInstance.unit.unitcode} - #{unitInstance.unit.unittitle}"/>
+                    </h:selectOneMenu>
+                    <h:outputText value="#{scec.newItem.uniti.idunitinstance} - #{scec.newItem.uniti.unit.unitcode} - #{scec.newItem.uniti.unit.unittitle}" rendered="#{!scec.creationMode}"/>
+                    <h:message styleClass="error" for="selectUnitInstance"/>
+                    
+                </h:panelGrid>
+
+                <h3>Authorised Files</h3>                    
+                <h:panelGrid styleClass="infoPanel" columns="3" >                
+                    <h:outputLabel value="Expected Files :"/><h:outputText value=""/><h:outputText value=""/>
+
+                    <h:outputLabel styleClass="subLabel" for="selectFileType" value="Choose a preset :"/>
+                    <h:selectOneMenu id="selectFileType" value="#{scec.fileConf}" >
+                        <f:selectItem itemLabel="(empty)" itemValue="[void]"/>
+                        <f:selectItem itemLabel="PDF Document" itemValue="1000:pdf"/>
+                        <f:selectItem itemLabel="ZIP Archive" itemValue="7000:zip"/>
+                        <f:selectItem itemLabel="Text Document" itemValue="1000:doc,docx,odt,pdf"/>
+                        <f:ajax immediate="true" render="inputFileType inputFileTypeError selectSize selectSizeError"/>
+                    </h:selectOneMenu><h:outputText value=""/>
+
+                    <h:outputLabel styleClass="subLabel" for="inputFileType" value=" Customize file type :"/>
+                    <h:inputText id="inputFileType" value="#{scec.newItem.fileType}" required="true" requiredMessage="You must specify an extension.">
+                        <f:validator validatorId="tagValidator"/>
+                        <f:ajax render="inputFileTypeError"/>
+                    </h:inputText>
+                    <h:message styleClass="error" for="inputFileType" id="inputFileTypeError"/>
+
+                    <h:outputLabel  styleClass="subLabel" value="Customize maximum file size (kB):" for="selectSize"/>
+                    <h:inputText value="#{scec.newItem.fileSize}" id="selectSize" required="true"  requiredMessage="You must specify a maximum file size." validatorMessage="Please set a value between 1 and 10000 kB">
+                        <f:validateLongRange minimum="1" maximum="10000"/>
+                        <f:ajax render="selectSizeError"/>
+                    </h:inputText>
+                    <h:message styleClass="error" for="selectSize" id="selectSizeError"/>
+
+                </h:panelGrid>
+
+                <h3>Submission Dates</h3>  
+                <h:panelGrid id="ChooseDate" styleClass="infoPanel" columns="3" >   
+                    <h:outputLabel  value="Open Submission Date and Time :" />
+                    <p:calendar value="#{scec.newItem.openingDate}" id="OpenDate" binding="#{openDate}"
+                            pattern="dd.MM.yyyy HH:mm" required="true"
+                            requiredMessage="you must specify the date on which the submissions will be open" >
+                        <f:ajax event="dateSelect" execute="OpenDate CloseDate FinalDate" render="OpenDateError CloseDateError FinalDateError" />
+                        <f:ajax execute="OpenDate CloseDate FinalDate" render="OpenDateError CloseDateError FinalDateError" />    
+                    </p:calendar>
+                    <h:message styleClass="error" id="OpenDateError" for="OpenDate"/>
+
+                    <h:outputLabel  value="Close Deadline Date and Time :" />
+                    <p:calendar value="#{scec.newItem.normalDeadline}" id="CloseDate" binding="#{closeDate}"
+                            pattern="dd.MM.yyyy HH:mm" required="true"
+                            requiredMessage="you must specify the date on which the submissions will be closed"
+                            validatorMessage="you have to open submission before to close them." >
+                        <f:validator validatorId="moreRecentThanValidator" />
+                        <f:attribute name="moreRecentThan" value="#{openDate.value}" />
+                        <f:ajax event="dateSelect" execute="OpenDate CloseDate FinalDate" render="CloseDateError FinalDateError" />
+                        <f:ajax execute="OpenDate CloseDate FinalDate" render="CloseDateError FinalDateError" />
+                    </p:calendar>
+                    <h:message styleClass="error" id="CloseDateError" for="CloseDate"/>
+
+                    <h:outputLabel  value="Final Deadline Date and Time :" />
+                    <p:calendar value="#{scec.newItem.finalDeadline}" id="FinalDate"
+                            pattern="dd.MM.yyyy HH:mm" required="true"
+                            requiredMessage="You must specify a final deadline"
+                            validatorMessage="Final closure of the submissions can not be made before the closing date announced." >
+                        <f:validator validatorId="moreRecentThanValidator" />
+                        <f:attribute name="moreRecentThan" value="#{closeDate.value}"/>
+                        <f:ajax event="dateSelect" execute="CloseDate FinalDate" render="FinalDateError" />
+                        <f:ajax execute="CloseDate FinalDate" render="FinalDateError" />                    
+                    </p:calendar>
+                    <h:message styleClass="error" id="FinalDateError" for="FinalDate"/>
+                    
+                </h:panelGrid>
+                
+                <p:commandButton value="Cancel" icon="ui-icon-cancel" action="toSubmissionConfiguration" ajax="false"  immediate="true">
+                    <f:setPropertyActionListener value="#{scec.originalSubmitConf}" target="#{userBean.tempSubmitConf}"/>
+                </p:commandButton>
+
+                <p:commandButton value="Reset" icon="ui-icon-arrowrefresh-1-s" type="reset" rendered="#{!scec.creationMode}" />
+
+                <p:commandButton value="Save" icon="ui-icon-disk" action="#{scec.edit()}" rendered="#{!scec.creationMode}">
+                    <f:setPropertyActionListener value="#{scec.newItem}" target="#{userBean.tempSubmitConf}"/>
+                </p:commandButton>
+                <p:commandButton value="Save" icon="ui-icon-disk" action="#{scec.add()}" rendered="#{scec.creationMode}">
+                    <f:setPropertyActionListener value="#{scec.newItem}" target="#{userBean.tempSubmitConf}"/>
+                </p:commandButton>
+                
+            </h:form>
+
+        </p:panel>
+    </ui:define>
+</ui:composition>

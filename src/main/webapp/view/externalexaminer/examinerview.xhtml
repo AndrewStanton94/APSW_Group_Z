@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <ui:define name="top">
+        <p><h2>External Examiner</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="All Marked Projects">
+            <h:form>
+                <p:dataTable value="#{externalExaminerController.list}" var="project" paginator="true" rows="25">
+                    <p:column>                           
+                        <f:facet name="header">Student</f:facet>
+                        <h:outputText value="#{project.student.forename} #{project.student.surname} (#{project.student.hemis})" />
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header">Project Title</f:facet>
+                        <h:outputText value="#{project.projecttitle}"/>
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header">Unit</f:facet>
+                        <h:outputText value="#{project.unitinstance}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Cohort</f:facet>
+                        <h:outputText value="#{project.moderator}"/>
+                    </p:column>
+                        <p:column rendered="#{userBean.external || userBean.admin}">
+                        <f:facet name="header">Satisfied</f:facet>
+                        <h:commandButton  value="Review" action="/view/externalexaminer/examineredit.xhtml" rendered="#{externalExaminerController.hasReviewed(project)}" >
+                            <f:setPropertyActionListener value="#{project}" target="#{examinerEditController.currentProject}" />
+                        </h:commandButton>
+                        <h:commandButton  value="Revise" action="/view/externalexaminer/examineredit.xhtml" rendered="#{!externalExaminerController.hasReviewed(project)}" >
+                            <f:setPropertyActionListener value="#{project}" target="#{examinerEditController.currentProject}" />
+                        </h:commandButton>
+                    </p:column>
+                    <p:column rendered="#{userBean.staff || userBean.admin}">
+                            <f:facet name="header">External</f:facet>
+                            <h:panelGrid>
+                            <h:outputText value="#{externalExaminerController.externalSatisfied(project)}"/>
+                            <h:outputText value="#{project.externalComments}"/>
+                            </h:panelGrid>
+                        </p:column>
+                </p:dataTable> 
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

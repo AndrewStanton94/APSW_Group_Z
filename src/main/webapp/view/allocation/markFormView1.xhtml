@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="./../main_template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <ui:define name="top">
+        <p><h2>Marking Form</h2></p>
+    </ui:define>
+    
+    <ui:define name="content">
+          <p:panel header="Step 1/2" styleClass="panelMarkFormView">
+
+            <h:form>
+                <h:panelGrid columns="2" styleClass="gridMarkFormView">
+                    
+                    <h:outputText value="Project:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#projectName"/>
+                    
+                    <h:outputText value="Student:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#student(s)Name"/>
+                    
+                    <h:outputText value="Supervisor:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#supervisorName"/>
+                    
+                    <h:outputText value="Moderator:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#moderatorName"/>
+                    
+                </h:panelGrid>
+                
+                <p:dataTable value="#{mfc.currentCatMarks}" var="dataItem" id="markTable">
+                    <p:column style="font-size:smaller" headerText="Category">
+                        <h:outputText value="#{dataItem.catId.catname}"
+                                      title="#{dataItem.catId.catlongname}: #{dataItem.catId.catdescription}" />
+                    </p:column>
+
+                    <p:column styleClass="columnMarkFormView" headerText="Weight">
+                        <h:outputText value="0"/>
+                    </p:column>
+                    <c:forEach items="#{mfc.markOptionListForCategoryMark(dataItem)}" var="opt">
+                        <p:column style="font-size:smaller" headerText="#{(opt.optionId.optLabel==null) ? 'Test' :  opt.optionId.optLabel}">
+                            <h:selectBooleanCheckbox value="#{opt.selectedBool}"  disabled="#{mfc.disabledFields}"
+                                                     title="#{mfc.getOptionTooltip(opt,dataItem )}">
+                                <f:ajax execute="@this" render=":MarkingTable:overallMark categoryMark"  event="click"   />
+                            </h:selectBooleanCheckbox>
+                        </p:column>
+
+
+                    </c:forEach>
+
+
+                    <p:column styleClass="columnMarkFormView">
+                        <f:facet name="header">
+                            <h:outputText value="Comments (optional)"/><br />
+                            <h:outputText value="[These may be notified to the student]"/>
+                        </f:facet>
+                        <h:inputTextarea value="#{dataItem.catComment}" disabled="#{mfc.disabledFields}"/>
+                    </p:column>
+
+                    <p:column id="markColumn" style="font-size:smaller" headerText="Category Mark">
+                        <h:outputText value="#{mfc.marks(dataItem)}" id="categoryMark"/>
+                    </p:column>
+                </p:dataTable>
+                
+                <h:panelGrid columns="1">
+                    <h:outputLabel value="General Comments:" styleClass="bold_size_outputMarkFormView"/>
+                    <h:inputTextarea cols="60" rows="5"/>
+                    
+                    <p></p>
+                    
+                     <h:panelGroup>
+                        <h:selectBooleanCheckbox value="false"/>
+                        <h:outputLabel value="Plagiarism" styleClass="bold_size_outputMarkFormView"/>
+                    </h:panelGroup>
+                    
+                    <p></p>
+                    
+                    <h:outputLabel value="Plagiarism comments:" styleClass="bold_size_outputMarkFormView"/>
+                    <h:inputTextarea cols="60" rows="5"/>
+                    
+                    <p></p>
+                    
+                    <h:panelGroup>
+                        <h:selectBooleanCheckbox value="false"/>
+                        <h:outputLabel value="Plagiarism suspect" styleClass="bold_size_outputMarkFormView"/>
+                    </h:panelGroup>
+                    
+                    <p></p>
+                    
+                    <h:outputLabel value="Unfair act notes:" styleClass="bold_size_outputMarkFormView"/>
+                    <h:inputTextarea cols="60" rows="5"/>
+                    
+                    <p></p>
+                    
+                    <h:outputLabel value="Comments for examiners:" styleClass="bold_size_outputMarkFormView"/>
+                    <h:inputTextarea cols="60" rows="5"/>
+                    
+                    <p></p>
+                    
+                    <h:outputLabel value="General examboard comments:" styleClass="bold_size_outputMarkFormView"/>
+                    <h:inputTextarea cols="60" rows="5"/>
+                </h:panelGrid>
+                
+                <h:panelGrid columns="2" styleClass="gridMarkFormView">
+                    <h:outputText value="Mark date:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#markDate"/>
+                    
+                    <h:outputText value="Marker:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#marker"/>
+                    
+                    <h:outputText value="Overall mark:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#overallMark"/>
+                    
+                    <h:outputText value="Mark status:" styleClass="bold_outputMarkFormView"/>
+                    <h:outputText value="#markStatus"/>
+                </h:panelGrid>
+                
+                <!-- redirection -->
+                <p:commandButton value="Back" accesskey="b" action="toProjectDetails" immediate="true"/>
+                <p:commandButton value="Submit" accesskey="s" action="toMarkFormView2" immediate="true"/>
+            </h:form>
+               
+        </p:panel>
+
+    </ui:define>
+</ui:composition>

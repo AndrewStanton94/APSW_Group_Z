@@ -1,0 +1,51 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+			  xmlns:ui="http://java.sun.com/jsf/facelets"
+			  xmlns:p="http://primefaces.org/ui"
+			  xmlns:h="http://java.sun.com/jsf/html"
+			  xmlns:f="http://java.sun.com/jsf/core"
+			  >
+
+    <h:form id="UnitStudentIn" rendered="#{pac.currentIsStudent()}" >
+        <fieldset><legend>Units</legend>
+            <p:dataTable value="#{pac.units}" var="upi" emptyMessage="No registered unit" style="text-align: center;">
+                <p:column headerText="Code">
+                    <h:outputText value="#{upi.unitinstance.unit.unitcode}"/>
+                </p:column>
+                <p:column headerText="Unit">
+                    <h:outputText value="#{upi.unitinstance.unit.unittitle}"/>
+                </p:column>
+                <p:column headerText="Kind">
+                    <h:outputText value="#{upi.unitinstance.unit.unitkind.kindname}"/>
+                </p:column>     	
+                <p:column headerText="Degree">
+                    <h:outputText value="#{upi.unitinstance.unit.courseLevel.name}"/>
+                </p:column>     	
+                <p:column headerText="Academic year">
+                    <h:outputText value="#{upi.unitinstance.academicyear.academicYearName}"/>
+                </p:column>
+                <p:column headerText="Status">
+                        <h:outputText value="#{pac.upiStatus(upi)}"/>
+                </p:column>
+                <p:column headerText="Action" rendered="#{userBean.admin}">
+                    <p:commandButton value="Confirm" action="#{pac.confirm(upi)}" update=":UnitStudentIn" rendered="#{upi.validationdate==null}">
+                            <f:param name="username" value="#{pac.current.username}" />
+                    </p:commandButton>
+                    <p:commandButton value="Delete" action="#{pac.delete(upi)}" update=":UnitStudentIn">
+                            <f:param name="username" value="#{pac.current.username}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <h:panelGroup>
+            <p:selectOneMenu value="#{pac.idUnitInstanceToAdd}" >
+                    <f:selectItems value="#{pac.unitInstanceList}" var="ui"
+                                   itemValue="#{ui.idunitinstance}" itemLabel="#{ui.unit.unittitle}"/>
+            </p:selectOneMenu>
+                    <p:commandButton value="Add Unit" update="UnitStudentIn" action="#{pac.addUnitInstance}" >
+                            <f:param name="username" value="#{pac.current.username}" />
+                    </p:commandButton>
+            </h:panelGroup>
+            <p:messages for="UnitStudentIn" />
+        </fieldset>
+    </h:form>
+</ui:component>

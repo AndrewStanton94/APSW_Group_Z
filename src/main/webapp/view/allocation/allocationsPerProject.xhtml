@@ -1,0 +1,32 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:panel header="Allocations for the project idea: #{appc.current.ideatitle}">
+            <h:form id="Allocation" >
+                <p:dataTable value="#{appc.allocationsByProject}" var="rs" rendered="#{fpc.cohortCoordinatorOfFinalProject || userBean.admin}">
+                    <p:column headerText="Student">
+                        <h:outputText value="#{rs.student.forename} #{rs.student.surname} (#{rs.student.username})" />
+                    </p:column>
+
+                    <p:column headerText="Supervisor">
+                        <h:outputText value="#{rs.supervisor.forename} #{rs.supervisor.surname} (#{rs.supervisor.username})" />
+                    </p:column>
+
+                    <p:column headerText="Total Rank">
+                        <h:outputText value="#{rs.ranksum}" />
+                    </p:column>
+
+                    <p:column headerText="Actions">
+                        <p:commandButton value="Allocate this student" rendered="#{!appc.isAllocated(rs)}"
+                                         action="#{appc.confirmStudentAllocation(rs)}" update=":Allocation" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

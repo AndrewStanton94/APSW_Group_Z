@@ -1,0 +1,66 @@
+ <ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="top">
+        <p><h2>Allocation</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Projects" rendered="#{userBean.student}" >
+
+                <!-- ugly loop-->
+                <c:forEach items="#{userBean.unitList()}" var="ui">
+                        <h:outputText value="Shortlist max size: #{projectController.getCohort(ui).ideashortlistmaxsize}" />
+                        <br />
+                        <h:outputText value="Register Stop: #{projectController.getCohort(ui).registerstop}">
+                                <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <br />
+                        <ui:include src="/view/allocation/components/SupervisorShortlist.xhtml"> 
+                                <ui:param name="personList" value="#{projectController.getChosenPersons(ui)}"/>
+                        </ui:include>
+                        <br />
+                        <ui:include src="/view/allocation/components/IdeaShortlist.xhtml"> 
+                                <ui:param name="ideaList" value="#{projectController.getChosenIdeas(ui)}"/>
+                        </ui:include>
+                </c:forEach>
+                <br />
+                <h:form rendered="#{userBean.unitList().size() != 0}">
+                        <h:commandLink value="Select Supervisors" action="toSupervisorList" />
+                        <p:spacer width="20"/>   ||  <p:spacer width="20"/>
+                        <h:commandLink value="Select ideas" action="toAllIdeas" />
+                </h:form>
+        </p:panel>
+
+        <p:panel header="Projects" rendered="#{userBean.engagedSupervisor}" >
+                <h:outputText value="Register Stop: #{userBean.cohort.registerstop}">
+                        <f:convertDateTime pattern="dd MMM yyyy"/>
+                </h:outputText>
+                <br />
+                <ui:include src="/view/allocation/components/SupervisorShortlist.xhtml"> 
+                        <ui:param name="personList" value="#{projectController.getChosenPersons(null)}"/>
+                </ui:include>
+                <br />
+                <ui:include src="/view/allocation/components/IdeaShortlist.xhtml">
+                        <ui:param name="ideaList" value="#{projectController.getChosenIdeas(null)}"/>
+                </ui:include>
+                <br />
+                <h:form>
+                        <h:commandLink value="Select Students" action="toPersonSelectList" />
+                        <p:spacer width="20"/>   ||  <p:spacer width="20"/>
+                        <h:commandLink value="Select ideas" action="toAllIdeas" />
+                </h:form>
+        </p:panel>
+        <br />
+        <p:fieldset legend="Note">
+                Unapproved ideas and unavailable supervisors won't be taken into account 
+                for the allocation. Please remove them from your shortlists.
+        </p:fieldset>
+        <pre>
+=> TODO Later: test to make sure there won't be conflicts with the cohorts/units register times
+        </pre>
+    </ui:define>
+</ui:composition>

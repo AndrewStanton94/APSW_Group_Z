@@ -1,0 +1,136 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Ideas Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <p:panel header="My All Referenced Ideas">
+			
+            <h:form id="AllIdeas" prependId="false" >
+                <fieldset><legend>Request for Project Idea Approval</legend>
+                    <p>
+                        <h:outputLabel value="Title :"/>
+                        <h:inputText value="#{aisc.searchTitle}" size="66" id="searchTitle">
+                            </h:inputText>
+                        <h:message for="searchTitle"/>
+                        
+                        <h:outputLabel value="My Project Status :"/>
+                        <h:selectOneMenu value="#{aisc.searchStatus}" id="searchStatus">
+                            <f:selectItem itemLabel="Approved" itemValue="Approved"/>
+                            <f:selectItem itemLabel="No Decision" itemValue="No Decision"/>
+                            <f:selectItem itemLabel="Rejected" itemValue="Rejected"/>
+                            <f:selectItem itemLabel="All" itemValue="All"/>
+                        </h:selectOneMenu>
+                        
+                        <h:outputLabel value=" Period :"/>
+                        <h:selectOneMenu value="#{aisc.searchTimePeriod}" id="searchTimePeriod">
+                            <f:selectItem itemLabel="... 3 months ago" itemValue="3"/>
+                            <f:selectItem itemLabel="... 6 months ago" itemValue="6"/>
+                            <f:selectItem itemLabel="... 12 months ago" itemValue="12"/>
+                            <f:selectItem itemLabel="... 18 months ago" itemValue="18"/>
+                            <f:selectItem itemLabel="... ever" itemValue="9999"/>
+                        </h:selectOneMenu>
+                        
+                        <h:commandButton value="Search" action="#{aisc.searchApprovedIdeaStaff()}"/>
+                    </p>
+                    
+                    <p:dataTable id="list" value="#{aisc.relationIdeaStaffList}" var="idea" paginator="true" rows="10"
+                                 style="text-align: center;">
+                        <p:column style="width:16px">
+                            <p:rowToggler />
+                        </p:column>
+                        
+                        <p:column headerText="Title" filterBy="#{idea.approvedIdeaList.ideatitle}" filterMatchMode="contains"
+                                  style="white-space:normal">  
+                            <h:outputText value="#{idea.approvedIdeaList.ideatitle}"/>
+                        </p:column>
+                        <p:column headerText="Submitted By" filterBy="#{idea.approvedIdeaList.owneridea.forename} #{idea.approvedIdeaList.owneridea.surname}" filterMatchMode="contains">                           
+                            <h:outputText value="#{idea.approvedIdeaList.owneridea.forename} #{idea.approvedIdeaList.owneridea.surname}"/>
+                        </p:column>
+                        <p:column headerText="Project Type" style="white-space:normal !important;">
+                            <h:outputText value="#{ilc.getIdeaKind(idea.approvedIdeaList)}"/>
+                        </p:column>
+                        <p:column headerText="Project Level" style="white-space:normal !important;">
+                            <h:outputText value="#{ilc.getIdeaGrade(idea.approvedIdeaList)}"/>
+                        </p:column>
+                         <p:column headerText="Submitted Date">
+                             <h:outputText value="#{idea.approvedIdeaList.submissiondate}" >
+                                <f:convertDateTime pattern="EEE, dd MMM, yyyy" timeZone="Europe/London"/>
+                             </h:outputText>
+                        </p:column>
+                        <p:column headerText="Project Status">
+                            <h:outputText value="#{idea.approvedIdeaList.ideastatus.ideastatusname}"/>
+                        </p:column>
+                        <p:column headerText="My Project Status" sortBy="#{idea.approvedStatus}">
+                            <h:outputText value="#{idea.approvedStatus}"/>
+                        </p:column>
+                       
+                        <p:rowExpansion>
+                            <p:dataTable id="list" value="#{aisc.searchRelationStaffListfromIdea(idea.approvedIdeaList)}" var="temp_value" rows="3">
+                                <p:column headerText="Approval Staff">
+                                    <h:outputText value="#{temp_value.approvedStaffList.forename} #{temp_value.approvedStaffList.surname}"/>
+                                </p:column>
+                                <p:column headerText="Approval Status">
+                                    <h:outputText value="#{temp_value.approvedStatus}"/>
+                                </p:column>
+                                <p:column headerText="Comment">
+                                    <h:outputText value="#{temp_value.approvedComment}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <table cellpadding="2" width="100%">
+                              <tbody>
+                                <tr>
+                                  <th>
+                                      <table cellpadding="2"  border="1">
+                                            <tr>
+                                                <th><h:outputLabel value="Aims of the Project :"/></th>
+                                                <td><h:outputLabel id="aims" value="#{idea.approvedIdeaList.aims}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <th><h:outputLabel value="Academic Question of the Project :"/></th>
+                                                <td><h:outputLabel id="academicquestion" value="#{idea.approvedIdeaList.academicquestion}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <th><h:outputLabel value="Full Description :"/></th>
+                                                <td><h:inputTextarea id="description" cols="40" rows="8" value="#{idea.approvedIdeaList.description}" disabled="true"/></td>
+                                            </tr>
+                                      </table>
+                                  </th>
+                                  <th>
+                                      <table cellpadding="2"  border="1">
+                                          <tr>
+                                              <th>
+                                                  <h:outputLabel value="Feedback to Student :"/>
+                                              </th>
+                                              <th>
+                                                  <h:inputTextarea id="description2" cols="40" rows="8" value="#{aisc.commentStr}" />
+                                              </th>
+                                          </tr>
+                                          <tr>
+                                              <td colspan="2" align="middle">
+                                                  <p:commandButton value="Approved" action="#{aisc.updateRelationStatus(idea, 'Approved')}"/>
+                                                  <p:commandButton value="No Decision" action="#{aisc.updateRelationStatus(idea, 'No Decision')}"/>
+                                                  <p:commandButton value="Rejected" action="#{aisc.updateRelationStatus(idea, 'Rejected')}"/>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </th>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </p:rowExpansion>
+                        
+                    </p:dataTable>
+                </fieldset>      
+            </h:form>
+
+        </p:panel>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,43 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Login Page</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel>
+            <p>Container login</p>
+            <h:form id="login" title="Login form" prependId="false" onsubmit="document.getElementById('login').action='j_security_check';">
+                <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
+                    <h:outputLabel value="Username:" />
+                    <h:inputText id="j_username" required="true" tabindex="1"/>
+                    <h:outputLabel value="Password:" />
+                    <h:inputSecret id="j_password" required="true" tabindex="2"/>
+
+                    <h:commandButton value="Login" tabindex="3"/>
+                    <h:link value="Lost password?" outcome="toLostPass"/>
+                </h:panelGrid>
+            </h:form>
+            <!--<p>Fudge login</p>
+            <h:form id="fudgelogin" title="Fudge login form">
+                <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
+                    <h:outputLabel value="Username:" />
+                    <h:inputText value="#{loginFudgeController.username}" required="true" tabindex="1"/>
+                    <h:outputLabel value="Password:" />
+                    <h:inputSecret value="#{loginFudgeController.password}" required="true" tabindex="2"/>
+
+                    <h:commandButton value="Login" tabindex="3" action="#{loginFudgeController.fudgeLogin()}"/>
+                </h:panelGrid>
+            </h:form>-->
+        </p:panel>
+        <p:panel>
+            <h:form>
+                <h:commandLink id="initialise" value="Initialise database" action="#{InitController.initdb}"/>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,36 @@
+.columnProjectDetails {
+    margin-left:10px;
+    vertical-align:top;
+}
+
+.bold_outputProjectDetails {
+    font-weight:bold;
+}
+
+.panelMarkFormView {
+    padding-left:1.5em;
+}
+
+.gridMarkFormView {
+    margin-top:1em;
+    margin-bottom:1em;
+    font-size:14px;
+}
+
+.bold_outputMarkFormView {
+    font-weight:bold;
+}
+
+.bold_size_outputMarkFormView {
+    font-weight:bold;
+    font-size:14px;
+}
+
+.columnMarkFormView {
+    font-size:smaller;
+}
+
+.groupMarkFormView {
+    margin-top:1em;
+    margin-bottom:2em;
+}

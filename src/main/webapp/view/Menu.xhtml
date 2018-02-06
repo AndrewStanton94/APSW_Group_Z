@@ -1,0 +1,60 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:form id="Menu" rendered="#{userBean.loggedIn &amp;&amp; !userBean.suspended}" style="margin-right:15px">
+        <p:menu styleClass="mainmenu">
+            <p:menuitem action="toAccount" value="Account" />
+
+            <p:menuitem rendered="#{userBean.admin}" action="toAdminPage" value="Admin Page"/>
+
+            <p:menuitem rendered="#{userBean.admin}" action="toAllocation" value="Allocation"/>
+
+            <p:menuitem rendered="#{userBean.admin}" action="toProjectList" value="Project List"/>
+            <p:menuitem rendered="#{userBean.admin}" action="toMarkingForms" value="Marking Form"/>
+
+            <p:submenu rendered="#{userBean.admin}" label="Manage Groups">
+                <p:menuitem value="Units" action="toUnit"/>
+                <p:menuitem value="Units Instances" action="toUnitInstance"/>
+                <p:menuitem value="Course" ajax="false" action="toCoursePage" actionListener="#{couc.displayList}"/>
+                <p:menuitem value="Course Instance" ajax="false" action="toCourseinstancePage" actionListener="#{cic.displayList}"/>
+                <p:menuitem value="Cohort" ajax="false" action="toCohortPage" actionListener="#{cohc.displayList}"/>
+                <p:menuitem value="Create a new Academic Year" ajax="false" action="toNewYear"/>
+            </p:submenu>
+
+            <p:submenu rendered="#{userBean.admin}" label="Old Manage Groups">
+                <p:menuitem value="Units" ajax="false" action="toOldUnitPage" actionListener="#{OldUc.displayList}"/>
+                <p:menuitem value="Unit Instances" ajax="false" action="toOldUnitinstancePage" actionListener="#{oldUnitic.displayList}"/>
+            </p:submenu>
+
+            <p:submenu label="Cohort Management">
+                <p:menuitem rendered="#{userBean.staff}" ajax="false" action="toYourCohortPage" value="Cohort Management"/>
+                <p:menuitem rendered="#{userBean.staff || userBean.admin}" value="Submission Configuration" action="toSubmissionConfiguration"/>
+            </p:submenu>
+
+            <p:menuitem action="toProjects" value="Projects" rendered="#{userBean.engagedSupervisor || userBean.student}"/>
+
+            <p:menuitem rendered="#{userBean.engagedSupervisor || ((projectListController.getListOfCohort().size() >0) ? 'true' : 'false' )}" action="toProjectList" value="Allocated Projects/Marks"/>
+
+            <p:menuitem value="Submit an Idea" action="toIdea"/>
+
+            <p:menuitem value="Submit Final Project" action="toSubmitProject"  />
+
+
+            <p:menuitem rendered="#{userBean.staff || userBean.admin}" ajax="false" action="/view/ideas/approvedStaffIdeaByStaff.xhtml" value="My Referenced Idea"/>
+
+            <p:menuitem action="toAllIdeas" value="See All Ideas"/>
+
+            <p:menuitem rendered="#{userBean.staff || userBean.admin}" action="toFeedback" value="Set Feedback"/>
+
+            <p:menuitem rendered="#{userBean.staff || userBean.admin}" action="toReviewMarking" value="Review Marking"/>
+
+            <p:menuitem rendered="#{userBean.admin}" action="toImportPage" value="Import"/>
+
+            <p:menuitem rendered="#{userBean.admin}" action="toExportPage" value="Export"/>
+
+        </p:menu>
+    </h:form>
+</ui:component>

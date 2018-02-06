@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../main_template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="top">
+        <p><h2>Allocation</h2></p>
+    </ui:define>
+    <ui:define name="content">
+            <h:form>
+                
+                <p:commandButton value="Save as new form" action="#" style="float: right;margin-top: 20px;"/>
+            </h:form>
+            <br />
+            <h:form id="MarkingTable" prependId="false" >
+                <p:dataTable value="#{markingForms.categories}" var="dataItem" id="markTable" style="width: 1130px;float: right">
+                    <p:column style="font-size:smaller" headerText="Category">
+                        <p:inputTextarea value="#{dataItem.catid.catname}"
+                                      title="#{dataItem.catid.catlongname}: #{dataItem.catid.catdescription}" />
+                    </p:column>
+
+                    <p:column style="font-size:smaller" headerText="Weight">
+                        <!-- <h:outputText value="{dataItem.catid.markFormCategoriesList.get(0).catweight}"/>-->
+                    </p:column>
+                    <c:forEach items="#{markingForms.columnLabels}" var="opt">
+
+                        <p:column style="font-size:smaller" headerText="#{(opt.optLabel == null) ? 'Test' : opt.optLabel}" />
+
+                        <h:selectBooleanCheckbox value="#{markingForms.selectedOptionLabel}" >
+                            <f:ajax execute="@this" render=":MarkingTable:overallMark categoryMark"  event="click"    />
+                        </h:selectBooleanCheckbox>                         
+                    </c:forEach>
+                    <p:column>
+                        <!-- <h:commandLink action="#" value="edit  "/>
+                         <h:commandLink action="#" value="  delete"/>-->
+
+                        <p:commandButton action="#{markingForms.getSelectedCategory(dataItem)}" value="edit" style="font-size:smaller"/>
+                        <p:commandButton action="#{markingForms.deleteAction(dataItem)}" value="delete" style="font-size:smaller" />
+                    </p:column>
+                </p:dataTable>
+                <input type="hidden" value="true" name="isUpdate"/>
+                <p:spacer height="5"/>
+            </h:form>
+            <p:panelGrid columns="2" style="float: right;margin-top: 20px;">
+                
+                    <p:commandButton value="Add New Category" action="#{markingForms.newCategoryOptionForm()}"/>
+                    <p:commandButton value="Back" action="markingForms"/>
+                
+            </p:panelGrid>
+        
+    </ui:define>
+
+    <ui:define name="messages">
+
+    </ui:define>
+</ui:composition>

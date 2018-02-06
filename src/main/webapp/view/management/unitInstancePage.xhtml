@@ -1,0 +1,75 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel id="unitInstancesTable" header="List of Unit Instances">
+            <h:form>
+                <p:dataTable value="#{unitIc.items}" var="unitinstance" paginator="true" rows="30"
+                             selectionMode="single" selection="#{unitIc.current}" rowKey="#{unitinstance.idunitinstance}">
+
+                    <p:column sortBy="#{unitinstance.idunitinstance}">
+                        <f:facet name="header">
+                            <h:outputText value="N°"/>
+                        </f:facet>
+                        <p:commandLink value="#{unitinstance.idunitinstance}" action="toUnitInstanceDetails" ajax="false">
+                        <f:setPropertyActionListener value="#{unitinstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column sortBy="#{unitinstance.unit.unitcode}">
+                        <f:facet name="header">
+                            <h:outputText value="Unit" />
+                        </f:facet>
+                        <h:outputText value="#{unitinstance.unit.unitcode} - #{unitinstance.unit.unittitle}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                        <f:facet name="header">
+                            <h:outputText value="Kind" />
+                        </f:facet>
+                        <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                    </p:column>
+
+                   <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                        <f:facet name="header">
+                            <h:outputText value="Academic Year" />
+                        </f:facet>
+                        <h:outputText value="#{unitinstance.academicyear.academicYearName}" />
+                    </p:column>
+
+                    <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                        <f:facet name="header">
+                            <h:outputText value="Students" />
+                        </f:facet>
+                        <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                    </p:column>
+
+                    <f:facet name="footer"> 
+                        <p:commandButton value="Details" icon="ui-icon-search" action="toUnitInstanceDetails" ajax="false">
+                            <f:setPropertyActionListener value="#{unitIc.current}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>    
+                        <p:commandButton value="Edit" icon="ui-icon-pencil" action="toUnitInstanceEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{unitIc.current}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton value="New" icon="ui-icon-plus" action="toUnitInstanceEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{null}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton id="showDeleteDialogButton" value="Delete" icon="ui-icon-trash" update=":confirmDeleteDialog" oncomplete="confirmationDelete.show()"/>
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+        
+        <p:confirmDialog id="confirmDeleteDialog" message="Are you sure you want to delete instance n°#{unitIc.current.idunitinstance} ?" header="Unit deletion" severity="alert" widgetVar="confirmationDelete">  
+            <p:commandButton id="confirm" value="Delete" icon="ui-icon-trash" update=":unitInstancesTable" oncomplete="confirmation.hide()" />  
+            <p:commandButton id="decline" value="Cancel" icon="ui-icon-cancel" onclick="confirmationDelete.hide()" type="button" />   
+        </p:confirmDialog>
+        
+    </ui:define>
+</ui:composition>

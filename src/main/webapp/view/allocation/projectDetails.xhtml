@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="./../main_template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                        
+    <ui:define name="top">
+        <p><h2>Project</h2></p>
+    </ui:define>
+    
+    <ui:define name="content">
+        <p:panel header="View Project">
+            <h:panelGrid columns="2" cellpadding="10" cellspacing="20" columnClasses="columnProjectDetails">
+                <h:panelGroup>
+                    <h:form id="projectDetails">
+                        <h3>Description</h3>
+                        <h:panelGrid columns="2">
+
+                            <h:outputText value="Student:" styleClass="bold_outputProjectDetails" />
+                            <h:dataTable value="#{fpc.current.student}" var="studentInProject" styleClass="datatable_noborder">
+                                <h:column>
+                                    <h:commandLink value="#{studentInProject.forename} #{studentInProject.surname}"
+                                            action="toUserInfo" >
+                                    <f:setPropertyActionListener value="#{studentInProject}" target="#{pac.current}" />
+                                    </h:commandLink>
+                                </h:column>
+                            </h:dataTable>
+
+                            <h:outputText value="Unit:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#{fpc.current.unitinstance.unit.unittitle}" />
+
+                            <h:outputText value="Cohort:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#Cohort" />
+
+                            <h:outputText value="Project Title:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#{fpc.current.projecttitle}" />
+
+                            <h:outputText value="Planning Submission Date:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#{fpc.current.plannedsubmissiondate}">
+                                <f:convertDateTime pattern="dd MMM yyyy" timeZone="Europe/London"/>
+                            </h:outputText>
+
+                            <h:outputText value="Actual Submission Date:" styleClass="bold_outputProjectDetails" /> 
+                            <h:outputText value="#{fpc.current.actualsubmissiondate}">
+                                <f:convertDateTime pattern="dd MMM yyyy" timeZone="Europe/London"/>
+                            </h:outputText>
+                            
+                            <h:outputText value="Supervisor:" styleClass="bold_outputProjectDetails" />
+                            <h:panelGrid columns="4">
+                                <h:outputText value="#Name" />
+                                <h:outputText value="Mark" styleClass="bold_outputProjectDetails" />
+                                <h:outputText value="#StatusStaffMark" />
+                                <h:outputText value="#Mark" />
+                                <h:outputText value="#{fpc.personSupervisor().getForename()} #{fpc.personSupervisor().getSurname()}" />
+                                <h:outputText value="Mark:" styleClass="bold_outputProjectDetails" />
+                                <h:outputText value="#{mfc.getStatusSupervisorByProjectAndMarker(fpc.personSupervisor(), fpc.personCoordinator(), fpc.current, userBean)}" />
+                                <h:outputText value="#{mfc.getMarkSupervisorByProjectAndMarker(fpc.personSupervisor(), fpc.personCoordinator(), fpc.current, userBean)}" />
+                            </h:panelGrid>
+                            
+                            <h:outputText value="Moderator:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="Coordinator:" styleClass="bold_outputProjectDetails" />
+                            
+                            <h:panelGrid columns="4">
+                                <h:outputText value="#Name" />
+                                <h:outputText value="Mark" styleClass="bold_outputProjectDetails" />
+                                <h:outputText value="#StatusStaffMark" />
+                                <h:outputText value="#Mark" />
+                                <h:outputText value="#{fpc.personCoordinator().getForename()} #{fpc.personCoordinator().getSurname()}" />
+                                <h:outputText value="Mark:" styleClass="bold_outputProjectDetails" />
+                                <h:outputText value="#{mfc.getStatusCoordinatorByProjectAndMarker(fpc.personSupervisor(), fpc.personCoordinator(),fpc.current, userBean)}" />
+                                <h:outputText value="#{mfc.getMarkCoordinatorByProjectAndMarker(fpc.personSupervisor(), fpc.personCoordinator(),fpc.current, userBean)}" />
+                            </h:panelGrid>
+                                
+                            <h:outputText value="Status:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#{fpc.current.finalMarkStatus}" />
+
+                            <h:outputText value="AGREED MARK:" styleClass="bold_outputProjectDetails" />
+                            <h:outputText value="#{fpc.finalMark}"/>
+
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGroup>
+                
+                <h:panelGroup>
+                    <!-- Action to completed -->
+                    <h:form id="projectMarkerOptions">
+                        <h:panelGrid columns="1">
+                            <h3>Marker Options</h3>
+                            <p:commandLink rendered="#{fpc.personSupervisor() eq userBean.getLoggedInUser() || fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Add/Update Project Mark" action="#{projectController.goToAddUpdateProjectMark()}"/>
+                            <p:commandLink rendered="#{fpc.personSupervisor() eq userBean.getLoggedInUser() || fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Enter reconciled mark" action="#{projectController.goToEnterReconciliedMark()}"/>
+                            <p:commandLink rendered="#{fpc.personSupervisor() eq userBean.getLoggedInUser() || fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Can't reconcile - ask for a third marker" action="#{projectController.goToAskThirdMarker()}"/>
+                            <p:commandLink rendered="#{fpc.personSupervisor() eq userBean.getLoggedInUser() || fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Can't reconcile - ask for another marker" action="#{projectController.goToAskAnotherMarker()}"/>
+                            <h:outputText rendered="#{!(fpc.personSupervisor() eq userBean.getLoggedInUser() || fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin)}" value="None"/>
+                        </h:panelGrid>
+                    </h:form>
+                    
+                    <!-- Action to completed -->
+                    <h:form id="projectCo-ordinatorOptions">
+                        <h:panelGrid columns="1">
+                            <h3>Co-ordinator Options</h3>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Enter project mark" action="#{projectController.goToEnterProjectMark()}"/>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Change Supervisor" action="#{projectController.goToChangeModerator()}"/>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="View project audit trail" action="#{projectController.goToAuditTrail()}"/>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="View full project details" action="#{projectController.goToFullProjectDetails()}"/>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Show supervisor's mark" action="#{projectController.goToSupervisorMark()}"/>
+                            <p:commandLink rendered="#{fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin}" value="Show coordinator's mark" action="#{projectController.goToModeratorMark()}"/>
+                            <h:outputText rendered="#{!(fpc.personCoordinator() eq userBean.getLoggedInUser() || userBean.admin)}" value="None"/>
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGroup>
+            </h:panelGrid>
+            
+            <!-- to view 0 or 1 -->
+            <h:form>
+                <p:commandButton value="Back" accesskey="b" action="toProjectList" immediate="true"/>
+            </h:form>
+            
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

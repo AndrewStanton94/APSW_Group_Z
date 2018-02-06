@@ -1,0 +1,38 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Account Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup>
+            <h:form>
+                <h2>#{pihc.current.projectidea1.ideatitle}</h2>
+                <h:panelGrid columns="2" columnClasses="columnWidth">
+
+                    <h:outputLabel value="Number :"/>
+                    <h:outputText value="#{pihc.current.projectideahistoryPK.numchange}"/>
+                    <h:outputLabel value="Date :"/>
+                    <h:outputText value="#{pihc.current.changedate}"/>
+                    <h:outputLabel value="Author :"/>
+                    <h:outputText value="#{pihc.current.person.forename} #{pihc.current.person.surname}"/>
+                    <h:outputLabel value="Changes"/>
+                    <h:outputLabel escape="false" value="#{pihc.convertChanges()}"/>
+                    <h:outputLabel value="Reason"/>
+                    <h:outputText value="#{pihc.current.changereason}"/>
+
+                </h:panelGrid>
+                <br />
+
+                <h:commandButton action="toIdeaDetails" value="Back">
+                    <f:param name="idIdea" value="#{pihc.current.projectideahistoryPK.projectidea}"/>
+                </h:commandButton>
+            </h:form>
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

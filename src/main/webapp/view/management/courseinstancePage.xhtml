@@ -1,0 +1,375 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="global">
+            <p:panel id="courseinstanceList" rendered="#{cic.opDisplayList}" header="List of Course Instances">
+                <h:form prependId="false">
+                    <p:commandButton value="New Course Instance" update=":global" actionListener="#{cic.addCourseInstance}"/>
+                    <br/><br/>
+
+                    <p:dataTable value="#{cic.items}" var="courseinstance" paginator="true" rows="30" selectionMode="single" rowKey="#{courseinstance.idcourseinstance}" >
+                        <p:column sortBy="#{courseinstance.idcourseinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <p:commandLink value="#{courseinstance.idcourseinstance}" update=":global" actionListener="#{cic.CourseInstanceDetails}">
+                                <f:setPropertyActionListener target="#{cic.current}" value="#{courseinstance}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.courseinstancename}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.courseinstancename}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.academicyear.academicYearName}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.course.coursecode}">
+                            <f:facet name="header">
+                                <h:outputText value="Course" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{courseinstance.course.coursecode} "/>
+                            <h:outputText value="#{courseinstance.course.coursename}"/>
+                        </p:column>
+                        <p:column sortBy="#{courseinstance.unitinstances.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit Instances" />
+                            </f:facet>
+                            <h:outputText value="#{courseinstance.unitinstances.size()}"/>
+                        </p:column>
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{cic.editCourseInstance}" update=":global">
+                                <f:setPropertyActionListener target="#{cic.current}" value="#{courseinstance}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                    
+                         <br/><br/>
+                    <p:dataTable  id="unitInstanceTable" value="#{cic.current.unitinstances}"
+                                  var="unitinstance" paginator="true" rows="20" paginatorPosition="bottom"
+                                  >
+                        <f:facet name="header">
+                            <h:outputText value="Unit Instances in this Course"/>
+                        </f:facet>
+                        <p:column sortBy="#{unitinstance.idunitinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <p:commandLink value="#{unitinstance.idunitinstance}" ajax="false" action="toUnitInstanceDetails">
+                                <f:setPropertyActionListener target="#{unitinstance}" value="#{userBean.tempUnitInstance}"/>
+                            </p:commandLink>
+                        </p:column>
+                         <p:column sortBy="#{unitinstance.unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                            <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                            <f:facet name="header">
+                                <h:outputText value="Reserved for" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                        </p:column>
+                       
+                        <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Students" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+
+            <p:panel id="addCourseinstance" header="Add a new Course Instance" rendered="#{cic.opAddCourseInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{cic.newItem.courseinstancename}" required="true"/>
+                        <h:outputLabel style="font-weight: bold" value="Academic Year"/>
+                        <h:selectOneMenu value="#{cic.academicyear}" >
+                            <f:selectItems
+                                value="#{ayc.items}"
+                                var="ay"
+                                itemValue="#{ay.idacademicyear}"
+                                itemLabel="#{ay.academicYearName}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <br/>
+                    <p:dataTable value="#{couc.items}" var="course" paginator="true" selectionMode="single" rows="30" selection="#{cic.newItem.course}" paginatorPosition="bottom" rowKey="#{course.coursecode}" >
+                        <f:facet name="header">
+                            <h:outputText value="Choose a Course" />
+                        </f:facet>
+                        <p:column sortBy="#{course.coursecode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <p:commandLink value="#{course.coursecode}" update=":global" actionListener="#{uc.courseDetails}">
+                                <f:setPropertyActionListener target="#{uc.current}" value="#{course}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{course.coursename}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{course.coursename}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="Create" action="#{cic.doAdd}"  actionListener="#{cic.displayList}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{cic.displayList}" render="global"/>
+                    </p:button>
+                    <p:messages/>
+
+                </h:form>
+            </p:panel>
+            <p:panel header="#{cic.current.courseinstancename}" rendered="#{cic.opCourseInstanceDetails}">
+                <h:form prependId="false">
+                    <br/>
+                    <h:panelGrid columns="2">
+                        
+                        <h:outputLabel value="N°"/>
+                        <h:outputText value="#{cic.current.idcourseinstance}"/>
+                        
+                        <h:outputLabel value="Name"/>
+                        <h:outputText value="#{cic.current.courseinstancename}"/>
+                    
+                        <h:outputLabel value="Course"/>
+                        <h:outputText value="#{cic.current.course.coursecode}"/>
+                        
+                        <h:outputLabel value="Academic Year"/>
+                        <h:outputText value="#{cic.current.academicyear.academicYearName}"/>
+                    
+                    </h:panelGrid>
+                    <br/>
+
+                    <p:dataTable value="#{cic.current.unitinstances}" var="unitinstance" paginator="true" rows="20" paginatorPosition="bottom" >
+                        <f:facet name="header">
+                            <h:outputText value="Unit Instances in this Course Instance"/>
+                        </f:facet>
+                        <p:column sortBy="#{unitinstance.idunitinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <p:commandLink value="#{unitinstance.idunitinstance}" ajax="false" action="toUnitInstanceDetails">
+                                <f:setPropertyActionListener target="#{unitinstance}" value="#{userBean.tempUnitInstance}"/>
+                            </p:commandLink>
+                        </p:column>
+                       
+                        <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                            <f:facet name="header">
+                                <h:outputText value="Reserved for" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                            <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Students" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="Back" actionListener="#{cic.displayList}" update=":global"/>
+                    <p:commandButton value="Edit" actionListener="#{cic.editCourseInstance}" update=":global"/>
+                </h:form>
+            </p:panel>
+
+            <p:panel header="#{cic.current.courseinstancename}" rendered="#{cic.opEditCourseInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="N°"/><h:outputText value="#{cic.current.idcourseinstance}"/>
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{cic.current.courseinstancename}"/>
+
+                    </h:panelGrid>
+                    <p:dataTable value="#{couc.items}" var="course" paginator="true" selectionMode="single" rows="30" selection="#{cic.current.course}" paginatorPosition="bottom" rowKey="#{course.coursecode}" >
+                        <f:facet name="header">
+                            <h:outputText value="Choose a Course" />
+                        </f:facet>
+                        <p:column sortBy="#{course.coursecode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <h:outputText value="#{course.coursecode}"/>
+                        </p:column>
+                        <p:column sortBy="#{course.coursename}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{course.coursename}"/>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    
+                    <p:fieldset legend="Available Unit Instances">  
+                        <p:dataTable id="availableUnitUnstances"  value="#{cohc.allUnitInstances}" 
+                                     var="unitinstance" selection="#{cic.selectedUnitInstances}" 
+                                     rowKey="#{unitinstance.idcourseinstance}" >  
+                            <p:column selectionMode="multiple" />
+                            <p:column sortBy="#{unitinstance.idunitinstance}">
+                                <f:facet name="header">
+                                    <h:outputText value="N°"/>
+                                </f:facet>
+                                <p:commandLink value="#{unitinstance.idunitinstance}" update=":global" action="toUnitPage" actionListener="#{unitic.UnitInstanceDetails}">
+                                    <f:setPropertyActionListener target="#{unitic.current}" value="#{unitinstance}"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.unit.unitcode}">
+                                <f:facet name="header">
+                                    <h:outputText value="Unit" />
+                                </f:facet>
+                                <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                                <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                                <f:facet name="header">
+                                    <h:outputText value="Kind" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                                <f:facet name="header">
+                                    <h:outputText value="Reserved for" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                                <f:facet name="header">
+                                    <h:outputText value="Academic Year" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                                <f:facet name="header">
+                                    <h:outputText value="Students" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:fieldset>
+
+                    <p:commandButton value="Add to Cohort"     actionListener="#{cic.selectInstance(ev)}"  update=":global" />
+                    <p:fieldset id="selected" legend="Chosen Unit Instances" style="margin-top:20px">  
+                        <p:outputPanel id="dropArea">  
+                            <h:outputText value="No records found yet."  
+                                          rendered="#{empty cohc.current.unitinstanceList}"  
+                                          style="font-size:24px;" />  
+                            <p:dataTable  id="unitInstanceTableSelected" value="#{cic.current.unitinstanceList}"
+                                          rendered="#{not empty cohc.current.unitinstanceList}"
+                                          var="unitinstance" 
+                                          >
+                                <p:column sortBy="#{unitinstance.idunitinstance}">
+                                    <f:facet name="header">
+                                        <h:outputText value="N°"/>
+                                    </f:facet>
+                                    <p:commandLink value="#{unitinstance.idunitinstance}" update=":global" action="toUnitPage" actionListener="#{unitic.UnitInstanceDetails}">
+                                        <f:setPropertyActionListener target="#{unitic.current}" value="#{unitinstance}"/>
+                                    </p:commandLink>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.unit.unitcode}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Unit" />
+                                    </f:facet>
+                                    <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                                    <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                                </p:column>
+
+                                <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Kind" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Reserved for" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Academic Year" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                                </p:column>
+
+                                <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Students" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">Remove</f:facet>
+                                    <p:commandButton value="Remove" action="#{cic.remove(unitinstance)}"
+                                                     update=":global"/>
+
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <p:commandButton value="Save" action="#{cic.doEdit}" actionListener="#{cic.CourseInstanceDetails}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{cic.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+            </p:panel>
+            
+            
+
+
+
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>
+

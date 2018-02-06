@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="top">
+        <p><h2>Feedback Edit</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Feedback">
+            <h:form>
+                <p:dataTable value="#{reviewFeedbackController.list}" var="markForm">
+                    <p:column>                           
+                        <f:facet name="header" >Category</f:facet>
+                        <h:outputText value="#{markForm.catid.catdescription}"/>
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header" >First Mark</f:facet> 
+                        <h:outputText value="#{reviewFeedbackController.currentFeedback.marks.get(0)}"/>
+                    </p:column>
+                    <p:column>                           
+                        <f:facet name="header" >Second Mark</f:facet>
+                        <h:outputText value="#{reviewFeedbackController.currentFeedback.marks.get(1)}"/>
+                    </p:column>
+                    <p:column rendered="#{reviewFeedbackController.currentFeedback.marks.get(2) != null}">
+                        <f:facet name="header">Third Mark</f:facet>
+                        <h:outputText rendered="#{reviewFeedbackController.currentFeedback.marks.get(2) != null}" value="#{reviewFeedbackController.currentFeedback.marks.get(2)}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Comments</f:facet>
+                        <h:outputText value="TODO:Implement the comments merge"/>
+                    </p:column>         
+                </p:dataTable> 
+                <h:commandButton value="Confirm Feedback" action="#{reviewFeedbackController.confirmFeedback}"/>
+                <h:commandButton value="Save" action="#{reviewFeedbackController.updateFeedback}" />
+                <h:commandButton value="General Comments" onclick="window.open('generalcomments.xhtml', 'popupWindowName', 'dependent=yes, location=0, menubar=no, toolbar=no, width=540, height=230'); return false;">
+                    <f:setPropertyActionListener value="#{project}" target="#{reviewFeedbackController.currentProject}" />
+                </h:commandButton>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

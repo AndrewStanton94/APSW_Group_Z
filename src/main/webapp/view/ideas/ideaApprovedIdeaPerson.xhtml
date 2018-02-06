@@ -1,0 +1,43 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Idea Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel header="Select Approved Staffs for Project Idea">
+            <h:form id="SelectApprovedIdeaPerson">
+                <p:dataTable id="listSelectApprovedSup" value="#{isc.userList}" var="user" paginator="true" rows="10">
+                    <p:column headerText="Name" sortBy="#{user.fullname} (#{user.username})"  filterMatchMode="contains"
+                              filterBy="#{user.username} #{user.forename} #{user.surname}">
+                        <h:outputText value="#{user.fullname} (#{user.username})"/>
+                    </p:column>
+                    
+                    <p:column headerText="Email" sortBy="#{user.email}">
+                        <h:outputText value="#{user.email}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Contact point" sortBy="#{user.contactpoints}">
+                        <h:outputText value="#{user.contactpoints}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Organisation" sortBy="#{user.organisation.nameorganisation}">
+                        <h:outputText value="#{user.organisation.nameorganisation}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Action">
+                        <p:commandButton value="Select" action="#{isc.doAdd()}">
+                            <f:setPropertyActionListener target="#{isc.supervisorUsername}" value="#{user.username}" />
+                        </p:commandButton>
+                     </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

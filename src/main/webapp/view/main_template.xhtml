@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="default.css"  />
+        <h:outputStylesheet library="css" name="cssLayout.css"  />
+        <h:outputStylesheet library="css" name="views.css"  />
+        <title>SUMS 2011</title>
+        <link rel="icon" href="resources/images/
+              favicon.ico" />
+    </h:head>
+    <h:body onload="document.login.j_username.focus();">
+        <f:view contentType="text/html">
+            <div id="top">
+                <ui:insert name="top"><p><h2>SUMS2011</h2></p></ui:insert>
+            </div>
+            <div id="bottom">
+                <ui:insert name="bottom">
+                    <p:panel >
+                        <h:form>
+                            <h:panelGroup layout="block" style="float:left; text-align:left;">
+                                <h:commandLink action="toIndex" tabindex="97">
+                                    <h:outputText value="Index"/>
+                                </h:commandLink>
+                            </h:panelGroup>
+
+                            <h:panelGroup layout="block" id="notes" style="float:right; text-align:right;">
+                                <h:panelGroup rendered="#{!userBean.loggedIn}">
+                                    <h:commandLink action="toLogin" value="login " tabindex="98"/> or
+                                    <h:commandLink action="toRegister" value=" register" tabindex="99"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{userBean.loggedIn}">
+                                    <h:outputText  value="#{userBean.loggedInUser.fullname} (#{userBean.loggedInUser.username}) - "/>
+                                    <h:commandLink action="#{userBean.logout}" value="logout" rendered="#{userBean.loggedIn}"/>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup layout="block" id="systemInfo" style="text-align:right" styleClass="smallprint">
+                                <h:outputLabel for="SysVersionInfo" value="Version: "/>
+                                <h:outputText id="SysVersionInfo" value="#{sysInfo.version} (rev #{sysInfo.svnRevision})"/>
+                                <h:outputText value=" | "/>
+                                <h:outputLabel for="SysDatabaseInfo" value="DB: "/>
+                                <h:outputText id="SysDatabaseInfo" value="#{sysInfo.database}"/>
+                                <h:outputText value=" |&nbsp;"/>
+                            </h:panelGroup>
+                        </h:form>
+                    </p:panel>
+                </ui:insert>
+            </div>
+            <div>
+                <div id="left">
+                    <ui:insert name="left">
+                        <ui:include src="/view/Menu.xhtml" />
+
+                    </ui:insert>
+                </div>
+                <div id="content" class="left_content" style="#{userBean.alterTemplate()}">
+                    <ui:insert name="content">Content</ui:insert>
+                    <ui:insert name="messages">
+                        <p:messages />
+                    </ui:insert>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+</html>

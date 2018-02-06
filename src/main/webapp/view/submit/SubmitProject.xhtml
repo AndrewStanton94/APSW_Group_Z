@@ -1,0 +1,77 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Submission</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        
+        <p:panel id="submitConfTable" rendered="#{!projectListController.list.isEmpty()}">
+            
+            <h:form>
+                <h3>Project</h3>
+                <h:outputLabel value="Select your project :" for="ProjectTitle"/>
+                <h:selectOneMenu id="ProjectTitle" value="#{projectListController.current}">
+                    <f:selectItems value="#{projectListController.list}" var="project" itemValue="#{project}" itemLabel="#{project.projecttitle}"/>
+                    <f:ajax execute="SubmitConfigSelect" render="SubmitConfigSelect" />
+                </h:selectOneMenu>
+
+                <h3>Submission</h3>
+                <p:dataTable value="#{projectListController.current.unitinstance.submitConfigurations}"
+                             id="SubmitConfigSelect" var="submitConf" paginator="true" rows="30"
+                             selectionMode="single" selection="#{scc.current}" rowKey="#{submitConf}">
+                    
+                    <p:column sortBy="#{submitConf.id}">
+                        <f:facet name="header">
+                            <h:outputText value="Code"/>
+                        </f:facet>
+                        <h:outputText value="#{submitConf.id}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.descriptionSubmitConfig}">
+                        <f:facet name="header">
+                            <h:outputText value="Description"/>
+                        </f:facet>
+                        <h:outputText value="#{submitConf.descriptionSubmitConfig}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.uniti.idunitinstance}">
+                        <f:facet name="header">
+                            <h:outputText value="Unit" />
+                        </f:facet>
+                        <h:outputText value="#{submitConf.uniti.idunitinstance} - #{submitConf.uniti.unit.unitcode} - #{submitConf.uniti.unit.unittitle}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{submitConf.normalDeadline}">
+                        <f:facet name="header">
+                            <h:outputText value="Duration" />
+                        </f:facet>
+                        <h:outputText value="#{submitConf.openingDate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=" - "/>
+                        <h:outputText value="#{submitConf.normalDeadline}">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=")"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Submit" icon="ui-icon-arrowthick-1-e" action="toSubmitProjectEdit" ajax="false">
+                            <f:setPropertyActionListener value="#{projectListController.current}" target="#{userBean.tempProj}"/>
+                            <f:setPropertyActionListener value="#{scc.current}" target="#{userBean.tempSubmitConf}"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+        <p:panel rendered="#{projectListController.list.isEmpty()}">
+            <h3>No projects found</h3>
+            <h:outputText value="Sorry, we found no project on which you can send documents."/>
+        </p:panel>
+    </ui:define>
+</ui:composition>

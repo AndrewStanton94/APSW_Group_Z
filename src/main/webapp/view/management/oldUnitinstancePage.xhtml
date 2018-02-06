@@ -1,0 +1,216 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="global">
+            <p:panel id="unitinstanceList" rendered="#{oldUnitic.opDisplayList}" header="List of Unit Instances">
+                <h:form prependId="false">
+                    <p:commandButton value="New Unit Instance" update=":global" actionListener="#{oldUnitic.addUnitInstance}" />
+                    <br/><br/>
+                    <p:dataTable value="#{oldUnitic.items}" var="unitinstance" paginator="true" rows="30">
+                        <p:column sortBy="#{unitinstance.idunitinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <p:commandLink value="#{unitinstance.idunitinstance}" update=":global" actionListener="#{oldUnitic.UnitInstanceDetails}">
+                                <f:setPropertyActionListener target="#{oldUnitic.current}" value="#{unitinstance}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                            <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                        </p:column>
+                       <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.academicyear.startdate}">
+                                <f:convertDateTime pattern="MMM dd, yyyy /" timeZone="Europe/London"/>
+                            </h:outputText>
+                            <h:outputText value="#{unitinstance.academicyear.enddate}">
+                                <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                            </h:outputText>
+                        </p:column>
+                      
+                        <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Students" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                        </p:column>
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{oldUnitic.editUnitInstance}" update=":global">
+                                <f:setPropertyActionListener target="#{oldUnitic.current}" value="#{unitinstance}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+
+            <p:panel id="addUnitinstance" header="Add a new Unit Instance" rendered="#{oldUnitic.opAddUnitInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                      
+                        <h:outputLabel style="font-weight: bold" value="Academic Year"/>
+                        <h:selectOneMenu value="#{oldUnitic.academicyear}" >
+                            <f:selectItems
+                                value="#{ayc.items}"
+                                var="ay"
+                                itemValue="#{ay.idacademicyear}"
+                                itemLabel="#{ayc.convertDate(ay)}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <br/>
+                    <p:dataTable value="#{uc.items}" var="unit" paginator="true" selectionMode="single" rows="30" selection="#{oldUnitic.newItem.unit}" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <h:outputText value="Choose a Unit" />
+                        </f:facet>
+                        <p:column sortBy="#{unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <p:commandLink value="#{unit.unitcode}" update=":global" actionListener="#{uc.unitDetails}">
+                                <f:setPropertyActionListener target="#{uc.current}" value="#{unit}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{unit.unittitle}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unitkind.kindname}"/>
+                        </p:column>
+                       
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="Create" action="#{oldUnitic.doAdd}"  actionListener="#{oldUnitic.displayList}" update=":global"/>
+                    <p:commandButton value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{oldUnitic.displayList}" render="global"/>
+                    </p:commandButton>
+               
+
+                </h:form>
+            </p:panel>
+            <p:panel header="#{oldUnitic.current.idunitinstance}" rendered="#{oldUnitic.opUnitInstanceDetails}">
+                <h:form prependId="false">
+                    <br/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="N°"/><h:outputText value="#{oldUnitic.current.idunitinstance}"/>
+                      
+                        <h:outputLabel style="font-weight: bold" value="Kind"/><h:outputText value="#{oldUnitic.current.unit.unitkind.kindname}"/>
+           
+                        <h:outputLabel style="font-weight: bold" value="Unit"/><h:outputText value="#{oldUnitic.current.unit.unitcode}"/>
+                        <h:outputLabel style="font-weight: bold" value="Academic Year"/>
+                        <h:panelGroup><h:outputText value="#{oldUnitic.current.academicyear.startdate}">
+                                <f:convertDateTime pattern="MMM dd, yyyy /" timeZone="Europe/London"/>
+                            </h:outputText>
+                            <h:outputText value="#{oldUnitic.current.academicyear.enddate}">
+                                <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                            </h:outputText></h:panelGroup>
+                    </h:panelGrid>
+                    <br/>
+                    <p:dataTable value="#{oldUnitic.current.unitpersoninList}" var="upi" paginator="true" rows="20" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <h:outputText value="Students in this Unit Instance" />
+                        </f:facet>
+                        <p:column sortBy="#{upi.person1.forename} #{upi.person1.surname} (#{upi.person1.username})">
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:commandLink value="#{upi.person1.forename} #{upi.person1.surname}" action="toUserInfo">
+                                <f:setPropertyActionListener value="#{upi.person1}" target="#{pac.current}"/>
+                            </h:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{upi.person1.hemis}">
+                            <f:facet name="header">
+                                <h:outputText value="Hemis Number"/>
+                            </f:facet>
+                            <h:outputText value="#{upi.person1.hemis}"/>
+                        </p:column>
+                        <p:column sortBy="#{upi.person1.username}">
+                            <f:facet name="header">
+                                <h:outputText value="Username"/>
+                            </f:facet>
+                            <h:outputText value="#{upi.person1.username}"/>
+                        </p:column>
+                        <p:column sortBy="#{upi.person1.email}">
+                            <f:facet name="header">Email</f:facet>
+                            <h:outputText value="#{upi.person1.email}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="Back" actionListener="#{oldUnitic.displayList}" update=":global"/>
+                    <p:commandButton value="Edit" actionListener="#{oldUnitic.editUnitInstance}" update=":global"/>
+                </h:form>
+            </p:panel>
+
+            <p:panel header="#{oldUnitic.current.idunitinstance}" rendered="#{oldUnitic.opEditUnitInstance}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="N°"/><h:outputText value="#{oldUnitic.current.idunitinstance}"/>
+                       
+
+                    </h:panelGrid>
+                    <p:dataTable value="#{uc.items}" var="unit" paginator="true" selectionMode="single" rows="30" selection="#{oldUnitic.current.unit}" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <h:outputText value="Choose a Unit" />
+                        </f:facet>
+                        <p:column sortBy="#{unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <p:commandLink value="#{unit.unitcode}" update=":global" actionListener="#{uc.unitDetails}">
+                                <f:setPropertyActionListener target="#{uc.current}" value="#{unit}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{unit.unittitle}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unitkind.kindname}"/>
+                        </p:column>
+                     
+                    </p:dataTable>
+                    <p:commandButton value="Save" action="#{oldUnitic.doEdit}" actionListener="#{oldUnitic.UnitInstanceDetails}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{oldUnitic.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+            </p:panel>
+
+
+
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>
+

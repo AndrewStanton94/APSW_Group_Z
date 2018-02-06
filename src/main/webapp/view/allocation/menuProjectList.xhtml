@@ -1,0 +1,82 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="top">
+        <p><h2>Allocation</h2></p>
+    </ui:define>
+    
+    <ui:define name="content">
+        <p:panel header="Project List">
+            <p style="font-size: 15px"> Hello #{userBean.loggedInUser.fullname}</p>
+            <p style="font-weight: bold; font-size:15px">Options :</p>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:panelGroup>
+                        <ul><span style="font-weight: bold">My projects to mark</span> submitted in last
+                            <li><h:commandLink value="... 3 months" action="#{projectListController.goToForm()}" >
+                                    <!--<f:param name="month" value="3" />-->
+                                </h:commandLink>
+                            </li>
+                            <li><h:commandLink value="... 6 months" action="#{projectListController.goToForm()}" >
+                                    <!--<f:param name="month" value="6" />-->
+                                </h:commandLink>
+                            </li>
+                            <li><h:commandLink value="... 12 months" action="#{projectListController.goToForm()}" >
+                                    <!--<f:param name="month" value="12" />-->
+                                </h:commandLink>
+                            </li>
+                            <li><h:commandLink value="... 18 months" action="#{projectListController.goToForm()}" >
+                                    <!--<f:param name="month" value="18" />-->
+                                </h:commandLink>
+                            </li>
+                            <li><h:commandLink value="... ever" action="#{projectListController.goToForm()}" >
+                                    <!--<f:param name="month" value="38" />-->
+                                </h:commandLink>
+                            </li>
+                        </ul>
+
+                        <ul><span style="font-weight: bold">My unmarked projects</span> to mark submitted in last
+                            <li><h:commandLink value="... 3 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 6 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 12 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 18 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... ever" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                        </ul>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <ul><span style="font-weight: bold">All projects</span> submitted in last 
+                            <li><h:commandLink value="... 3 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 6 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 12 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 18 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... ever" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                        </ul>
+
+                        <ul><span style="font-weight: bold">All unmarked projects</span> submitted in last 
+                            <li><h:commandLink value="... 3 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 6 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 12 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 18 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... ever" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                        </ul>
+                    </h:panelGroup>
+                    <h:panelGroup></h:panelGroup>
+                    <h:panelGroup>
+                        <ul><span style="font-weight: bold">All agreed marks</span> in last
+                            <li><h:commandLink value="... 3 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 6 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 12 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... 18 months" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                            <li><h:commandLink value="... ever" action="#{projectListController.goToForm()}" ></h:commandLink></li>
+                        </ul>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+                
+        </p:panel>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,87 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Account Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup>
+            <h:form id="SumitProjectidea">
+                <h:panelGrid id="panelProjectidea" columns="2" columnClasses="columnWidth">
+
+                    <h:outputLabel value="Your Status :"/>
+                    <h:outputLabel id="CurrentUserStatus" value="#{iec.currentUserStatus}"/>
+                    <h:outputLabel value="Idea title :"/>
+                    <h:outputLabel id="ideatitle" value="#{iec.currentidea.ideatitle}" />
+
+
+                    <h:outputLabel value="Aims and objectives of the project :"/>
+                    <h:outputLabel id="aims" value="#{iec.currentidea.aims}" />
+
+                    <h:outputLabel value="Academic question of the project :"/>
+                    <h:outputLabel id="academicquestion" value="#{iec.currentidea.academicquestion}"  />
+
+                    <h:outputLabel value="Idea kind :"/>
+                    <h:outputLabel id="IdeaKind" value="#{ilc.getIdeaKind(iec.currentidea)}" />
+
+                    <h:outputLabel value="Idea status :"/>
+                    <h:outputLabel id="IdeaStatus" value="#{iec.currentidea.ideastatus.ideastatusname}"  />
+
+                    <h:outputLabel value="Idea grade :"/>
+                    <h:outputLabel id="IdeaGrade" value="#{ilc.getIdeaGrade(iec.currentidea)}"  />
+
+                    <h:outputLabel value="Description :"/>
+                    <h:outputLabel id="description" value="#{iec.descconvert()}" escape="false" />
+   <h:outputLabel value="Number of students who chosen this idea :"/>
+                    <h:outputLabel id="numberstudents" value="#{ilc.getNumberOfStudents(iec.currentidea)}" escape="false" />
+                     <h:outputLabel value="Number of supervisors who chosen this idea :"/>
+                    <h:outputLabel id="numbersupervisors" value="#{ilc.getNumberOfSupervisors(iec.currentidea)}" escape="false" />
+
+                </h:panelGrid>
+                <br />
+                <h3>History of Changes</h3>
+                <p:dataTable value="#{iec.currentidea.projectideahistoryList}" var="pih"
+                             rendered="#{userBean.isStaff() || userBean.isAdmin() || userBean.getUser().equals(iec.currentidea.owneridea.username)}">
+                    <p:column headerText="N°" sortBy="#{pih.projectideahistoryPK.numchange}">
+                        <h:commandLink value="#{pih.projectideahistoryPK.numchange}" action="toHistoryDetails">
+                            <f:param value="#{pih.projectideahistoryPK.numchange}" name="idPihNum" />
+                            <f:param value="#{pih.projectideahistoryPK.idperson}" name="idPihPers" />
+                            <f:param value="#{pih.projectideahistoryPK.projectidea}" name="idPihProj" />
+                        </h:commandLink>
+                    </p:column>
+                    <p:column headerText="Date" sortBy="#{pih.changedate}">
+                        <h:outputText value="#{pih.changedate}">
+                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Author" sortBy="#{pih.person.surname}">
+                        <h:outputText value="#{pih.person.forename} #{pih.person.surname}"/>
+                    </p:column>
+                    <p:column headerText="Reason" sortBy="#{pih.changereason}">
+                        <h:outputText value="#{pih.changereason}"/>
+                    </p:column>
+                </p:dataTable>
+
+                <p:commandButton value="Edit" action="toEditfromDetails"
+                                 rendered="#{userBean.canEditIdeas(iec.currentidea)}"/>
+                <p:button value="Cancel" outcome="backListAll"/>
+				
+				<!-- Select button for students -->
+                <ui:repeat value="#{userBean.unitList()}" var="ui">
+                    <p:commandButton value="Select" action="#{iec.selectIdea(ui)}"
+                                     rendered="#{userBean.hasToSelectIdeas()}"
+                                     ajax="false"/>
+                </ui:repeat>
+                    <!-- Select button for supervisors -->
+                    <p:commandButton value="Select" action="#{iec.selectIdea(null)}"
+                                     rendered="#{userBean.engagedSupervisor}"
+                                     ajax="false" />
+            </h:form>
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

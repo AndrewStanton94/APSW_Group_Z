@@ -1,0 +1,430 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="global">
+            <p:panel id="cohortList" rendered="#{cohc.opDisplayList}" header="List of Cohorts">
+                <h:form prependId="false">
+                    <p:commandButton value="New Cohort" update=":global" actionListener="#{cohc.addCohort}"/>
+                    <br/><br/>
+                    <p:dataTable value="#{cohc.items}" var="cohort" paginator="true" rows="30"
+                                 id="cohortTable" selectionMode="single" rowKey="#{cohort.idcohort}" >
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="N°" />
+                            </f:facet>
+                            <p:commandLink value="#{cohort.idcohort}" update=":global" actionListener="#{cohc.cohortDetails}">
+                                <f:setPropertyActionListener target="#{cohc.current}" value="#{cohort}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{cohort.cohortlabel}"/>
+                        </p:column>
+
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{cohc.editCohort}" update=":global">
+                                <f:setPropertyActionListener target="#{cohc.current}" value="#{cohort}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+                    <br/><br/>
+                    <p:dataTable  id="unitInstanceTable" value="#{cohc.current.units}"
+                                  var="unitinstance" paginator="true" rows="20" paginatorPosition="bottom"
+                                  >
+                        <f:facet name="header">
+                            <h:outputText value="Unit Instances in this Cohort"/>
+                        </f:facet>
+                        <p:column sortBy="#{unitinstance.idunitinstance}">
+                            <f:facet name="header">
+                                <h:outputText value="N°"/>
+                            </f:facet>
+                            <p:commandLink value="#{unitinstance.idunitinstance}" ajax="false" action="toUnitInstanceDetails">
+                                <f:setPropertyActionListener target="#{unitinstance}" value="#{userBean.tempUnitInstance}"/>
+                            </p:commandLink>
+                        </p:column>
+                         <p:column sortBy="#{unitinstance.unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Unit" />
+                            </f:facet>
+                            <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode}"/>
+                            <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                            <f:facet name="header">
+                                <h:outputText value="Reserved for" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                            <f:facet name="header">
+                                <h:outputText value="Academic Year" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                        </p:column>
+                       
+                        <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                            <f:facet name="header">
+                                <h:outputText value="Students" />
+                            </f:facet>
+                            <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+            </p:panel>
+
+            <p:panel id="addCohort" header="Add a new Cohort" rendered="#{cohc.opAddCohort}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Label"/><p:inputText value="#{cohc.newItem.cohortlabel}" required="true"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable ideas"/><p:spinner value="#{cohc.newItem.ideashortlistmaxsize}" size="2"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable supervisors"/><p:spinner value="#{cohc.newItem.supervisorshortlistmaxsize}" size="2"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Create" action="#{cohc.doAdd}"  actionListener="#{cohc.displayList}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{cohc.displayList}" render="global"/>
+                    </p:button>
+                  
+                </h:form>
+            </p:panel>
+            <p:panel header="#{cohc.current.cohortlabel}" rendered="#{cohc.opCohortDetails}">
+                <h:form prependId="false">
+                    <br/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><h:outputText value="#{cohc.current.idcohort}"/>
+                        <h:outputLabel style="font-weight: bold" value="Label"/><h:outputText value="#{cohc.current.cohortlabel}"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable ideas"/><h:outputText value="#{cohc.current.ideashortlistmaxsize}"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable supervisors"/><h:outputText value="#{cohc.current.supervisorshortlistmaxsize}"/>
+                    </h:panelGrid>
+                    <br/>
+                    <p:commandButton value="Back" actionListener="#{cohc.displayList}" update=":global"/>
+                    <p:commandButton value="Edit" actionListener="#{cohc.editCohort}" update=":global"/>
+                    <br /><br/>
+                    <p:panel>
+
+                    </p:panel>
+                </h:form>
+            </p:panel>
+            <p:panel header="#{cohc.current.cohortlabel}" rendered="#{cohc.opEditCohort}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Label"/><p:inputText value="#{cohc.current.cohortlabel}"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable ideas"/><p:spinner value="#{cohc.current.ideashortlistmaxsize}" size="2"/>
+                        <h:outputLabel style="font-weight: bold" value="Max choosable supervisors"/><p:spinner value="#{cohc.current.supervisorshortlistmaxsize}" size="2"/>
+                    </h:panelGrid>
+                    <br/>
+
+
+
+                    <p:fieldset legend="Available Unit Instances">  
+                        <p:dataTable id="availableUnitUnstances"  value="#{cohc.allUnitInstances}"  
+                                     var="unitinstance" selection="#{cohc.selectedUnitInstances}" >  
+                            <p:column selectionMode="multiple" />
+                            <p:column sortBy="#{unitinstance.idunitinstance}">
+                                <f:facet name="header">
+                                    <h:outputText value="N°"/>
+                                </f:facet>
+                                <p:commandLink value="#{unitinstance.idunitinstance}" update=":global" action="toUnitPage" actionListener="#{unitic.UnitInstanceDetails}">
+                                    <f:setPropertyActionListener target="#{unitic.current}" value="#{unitinstance}"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.unit.unitcode}">
+                                <f:facet name="header">
+                                    <h:outputText value="Unit" />
+                                </f:facet>
+                                <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                                <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                                <f:facet name="header">
+                                    <h:outputText value="Kind" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                                <f:facet name="header">
+                                    <h:outputText value="Reserved for" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                                <f:facet name="header">
+                                    <h:outputText value="Academic Year" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                            </p:column>
+
+                            <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                                <f:facet name="header">
+                                    <h:outputText value="Students" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:fieldset>
+
+                    <p:commandButton value="Add to Cohort"     actionListener="#{cohc.selectInstance(ev)}"  update=":global" />
+                    <p:fieldset id="selected" legend="Chosen Unit Instances" style="margin-top:20px">  
+                        <p:outputPanel id="dropArea">  
+                            <h:outputText value="No records found yet."  
+                                          rendered="#{empty cohc.current.unitinstanceList}"  
+                                          style="font-size:24px;" />  
+                            <p:dataTable  id="unitInstanceTableSelected" value="#{cohc.current.unitinstanceList}"
+                                          rendered="#{not empty cohc.current.unitinstanceList}"
+                                          var="unitinstance" 
+                                          >
+                                <p:column sortBy="#{unitinstance.idunitinstance}">
+                                    <f:facet name="header">
+                                        <h:outputText value="N°"/>
+                                    </f:facet>
+                                    <p:commandLink value="#{unitinstance.idunitinstance}" update=":global" action="toUnitPage" actionListener="#{unitic.UnitInstanceDetails}">
+                                        <f:setPropertyActionListener target="#{unitic.current}" value="#{unitinstance}"/>
+                                    </p:commandLink>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.unit.unitcode}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Unit" />
+                                    </f:facet>
+                                    <h:outputText style="font-weight: bold" value="#{unitinstance.unit.unitcode} "/>
+                                    <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                                </p:column>
+
+                                <p:column sortBy="#{unitinstance.unit.unitkind.kindname}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Kind" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unit.unitkind.kindname}"/>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.unit.courseLevel.name}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Reserved for" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unit.courseLevel.name}"/>
+                                </p:column>
+                                <p:column sortBy="#{unitinstance.academicyear.startdate}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Academic Year" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                                </p:column>
+
+                                <p:column sortBy="#{unitinstance.unitpersoninList.size()}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Students" />
+                                    </f:facet>
+                                    <h:outputText value="#{unitinstance.unitpersoninList.size()}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">Remove</f:facet>
+                                    <p:commandButton value="Remove" action="#{cohc.remove(unitinstance)}"
+                                                     update=":global"/>
+
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:fieldset>
+
+                    <p:commandButton value="Save" action="#{cohc.doEdit}" actionListener="#{cohc.cohortDetails}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{cohc.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+            </p:panel>
+
+
+        </h:panelGroup>
+
+        <!--
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohorts</legend>
+                                <h:dataTable value="#{cohc.items}" var="cohort" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Code" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.idcohort}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.cohortlabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Cohorts">
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohorts</legend>
+                                <h:dataTable value="#{cohc.items}" var="cohort" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Label" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.cohortlabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration end" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Projects start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Project stop" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="CohortInstances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohort instances</legend>
+                                <h:dataTable value="#{cohortic.items}" var="cohortinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.cohortinstancetitle}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Academic year" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.academicyear.startdate}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy /"/>
+                                        </h:outputText>
+                                        <h:outputText value="#{cohortinstance.academicyear.enddate}">
+                                            <f:convertDateTime pattern=" MMM dd, yyyy"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cohort" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.cohort.idcohort} "/>
+                                        <h:outputText value="#{cohortinstance.cohort.cohorttitle}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Cohort Instances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohort instances</legend>
+                                <h:dataTable value="#{cic.items}" var="cohortinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Label" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.cohortinstancelabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Level" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.cohortlevel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cohort" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohortinstance.cohort.idcohort} #{cohortinstance.cohort.cohortlabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+
+                        </h:form>
+        -->
+    </ui:define>
+</ui:composition>
+

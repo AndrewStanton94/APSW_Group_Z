@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:f="http://java.sun.com/jsf/core"
+              >
+
+    <h:form id="UserPass" >
+        <fieldset><legend>Change Password</legend>
+            <h:panelGroup rendered="#{pac.myProfile}" >
+                <h:panelGrid columns="3">
+                    <h:outputLabel for="currentpassword" value="Current Password:"/>
+                    <h:inputSecret id="currentpassword" value="#{pac.currentPassword}" required="true" requiredMessage="You must type your password">
+                        <f:ajax event="blur" execute="@this" render="currentpasswordError" />
+                    </h:inputSecret>
+                    <h:message styleClass="error" id="currentpasswordError" for="currentpassword"/>
+
+                    <h:outputLabel for="password" value="New Password:" />
+                    <h:inputSecret id="password" value="#{pac.newPassword}"  binding="#{originalPassword}" required="true" requiredMessage="You must type a new password">
+                        <f:validator validatorId="passwordValidator" />
+                        <f:ajax event="blur" execute="password confirmpassword" render="passwordError confirmpasswordError" />
+                    </h:inputSecret>
+                    <h:message styleClass="error" id="passwordError" for="password" />
+
+                    <h:outputLabel for="confirmpassword" value="Confirm Password :" />
+                    <h:inputSecret id="confirmpassword">
+                        <f:validator validatorId="copyOfValidator" />
+                        <f:attribute name="copyOf" value="#{originalPassword.value}" />
+                        <f:ajax event="blur" execute="password confirmpassword" render="confirmpasswordError" />
+                    </h:inputSecret>
+                    <h:message styleClass="error" id="confirmpasswordError" for="confirmpassword" />
+                    
+                </h:panelGrid>
+                
+                <h:commandButton value="Save" action="#{pac.changePassword}">
+                    <f:param name="username" value="#{pac.current.username}" />
+                </h:commandButton>
+                
+            </h:panelGroup>
+            
+            <h:commandButton value="Generate New Password" action="#{pac.generatePassword}" rendered="#{userBean.admin}" immediate="true">
+                <f:param name="username" value="#{pac.current.username}" />
+            </h:commandButton>
+            
+            <p:message for="UserPass" />
+        </fieldset>	
+    </h:form>
+</ui:component>

@@ -1,0 +1,16 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Registration completed.</h2></p>
+    </ui:define>
+    <ui:define name="content">
+		<p:panel>
+		<h:outputText value="You can now log in and start using the application." rendered="#{prc.validKey}" />
+		<h:outputText value="Key Error." rendered="#{!prc.validKey}" />
+		</p:panel>
+    </ui:define>
+</ui:composition>

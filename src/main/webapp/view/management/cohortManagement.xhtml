@@ -1,0 +1,50 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel header="List of your Cohorts">
+         
+            <h:form prependId="false">
+                <br/>
+                <p:dataTable value="#{cohc.cohortList}" var="cohort" style="text-align: center;">
+                   <p:column headerText="Label">
+                       <h:commandLink value="#{cohort.cohortlabel}" action="toDetails">
+                           <f:param name="cohortId" value="#{cohort.idcohort}"/>
+                       </h:commandLink>
+                   </p:column>
+                   <p:column headerText="Registration start">
+                       <h:outputText value="#{cohort.registerstart}">
+                           <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                       </h:outputText>
+                   </p:column>
+                   <p:column headerText="Registration end">
+                       <h:outputText value="#{cohort.registerstop}">
+                           <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                       </h:outputText>
+                   </p:column>
+                   <p:column headerText="Projects start">
+                       <h:outputText value="#{cohort.projectstart}">
+                           <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                       </h:outputText>
+                   </p:column>
+                   <p:column headerText="Project stop">
+                       <h:outputText value="#{cohort.projectstop}">
+                           <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                       </h:outputText>
+                   </p:column>
+
+               </p:dataTable>
+            </h:form>
+        
+        </p:panel>
+
+    </ui:define>
+</ui:composition>
+

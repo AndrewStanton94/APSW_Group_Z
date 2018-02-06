@@ -1,0 +1,35 @@
+<ui:component   xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<h:form >
+            <p:dataTable value="#{personList}" var="supChoice" style="text-align: center;">
+                <f:facet name="header">Chosen Supervisors</f:facet>
+                <p:column headerText="Rank">
+                    <h:outputText value="#{supChoice.personrank}"/>
+                </p:column>
+
+                <p:column headerText="Name">
+                    <h:commandLink value="#{supChoice.person1.surname} #{supChoice.person1.forename}" action="/view/register/user_info.xhtml">
+                            <f:setPropertyActionListener value="#{supChoice.person1}" target="#{pac.current}"/>
+                    </h:commandLink>
+                </p:column>
+
+                <p:column headerText="Actions">
+                    <h:commandButton image="/resources/images/arrow-090.png" alt="Rank up" action="#{projectController.rankSupervisorUp(supChoice)}">
+                            <f:ajax render="@form" execute="@form"/>
+                    </h:commandButton>
+                    <h:commandButton image="/resources/images/arrow-270.png" alt="Rank down" action="#{projectController.rankSupervisorDown(supChoice)}">
+                            <f:ajax render="@form" execute="@form"/>
+                    </h:commandButton>
+                    <h:commandButton image="/resources/images/cross.png" alt="Delete" action="#{projectController.removeSupervisor(supChoice)}">
+                            <f:ajax render="@form" execute="@form"/>
+                    </h:commandButton>
+                </p:column>
+
+            </p:dataTable>
+	</h:form>
+</ui:component>

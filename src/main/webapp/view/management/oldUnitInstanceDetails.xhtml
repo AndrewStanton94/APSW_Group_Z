@@ -1,0 +1,81 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+      
+        <p:panel>
+            <h3>Listings to be confirmed</h3>
+            <h:form prependId="false">
+                <p:dataTable id="listConfirm" value="#{unitic.listStudentToConfirm}" var="studentToConfirm">
+                    <p:column sortBy="#{studentToConfirm.username}">
+                        <f:facet name="header">
+                            <h:outputText value="Username" />
+                        </f:facet>
+                        <h:commandLink value="#{studentToConfirm.username}" action="toStudentDetails">
+                        </h:commandLink>
+                    </p:column>
+                    <p:column sortBy="#{studentToConfirm.surname}">
+                        <f:facet name="header">
+                            <h:outputText value="Surname" />
+                        </f:facet>
+                        <h:outputText value="#{studentToConfirm.surname}"/>
+                    </p:column>
+                    <p:column sortBy="#{studentToConfirm.forename}">
+                        <f:facet name="header">
+                            <h:outputText value="Forename" />
+                        </f:facet>
+                        <h:outputText value="#{studentToConfirm.forename}"/>
+                    </p:column>
+                    <p:column sortBy="#{studentToConfirm.hemis}">
+                        <f:facet name="header">
+                            <h:outputText value="Hemis number" />
+                        </f:facet>
+                        <h:outputText value="#{studentToConfirm.hemis}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <br/>
+            <h3>Students in the Unit</h3>
+            <h:form id="form" prependId="false" >
+                <p:dataTable id="listStudent" value="#{unitic.current.unitpersoninList}" var="upi" paginator="true" rows="10">
+                    <p:column  sortBy="#{upi.person1.username}">
+                        <f:facet name="header">
+                            <h:outputText value="Username" />
+                        </f:facet>
+
+                        <p:commandLink value="#{upi.person1.username}" action="toStudentDetails">
+                        </p:commandLink>
+                    </p:column>
+                    <p:column sortBy="#{upi.person1.surname}">
+                        <f:facet name="header">
+                            <h:outputText value="Surname" />
+                        </f:facet>
+                        <h:outputText value="#{upi.person1.surname}"/>
+                    </p:column>
+                    <p:column sortBy="#{upi.person1.forename}">
+                        <f:facet name="header">
+                            <h:outputText value="Forename" />
+                        </f:facet>
+                        <h:outputText value="#{upi.person1.forename}"/>
+                    </p:column>
+                    <p:column sortBy="#{upi.person1.hemis}">
+                        <f:facet name="header">
+                            <h:outputText value="Hemis number" />
+                        </f:facet>
+                        <h:outputText value="#{upi.person1.hemis}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+
+    </ui:define>
+</ui:composition>
+

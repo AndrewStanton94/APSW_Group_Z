@@ -1,0 +1,72 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Ideas Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <p:panel header="All Ideas">
+            <h:form id="AllIdeas" prependId="false" >
+                <p:dataTable id="list" value="#{ilc.ideaList}" var="idea" paginator="true" rows="25" style="text-align: center;">
+                    <f:facet name="header">All ideas registered</f:facet>
+
+                    <p:column sortBy="#{idea.ideatitle}" headerText="Title" style="white-space:normal"
+                              filterBy="#{idea.ideatitle}" filterMatchMode="contains">
+                        <h:commandLink value="#{idea.ideatitle}" action="/view/ideas/ideadetails.xhtml" >
+                            <f:setPropertyActionListener value="#{idea}" target="#{userBean.tempidea}" />
+                        </h:commandLink>
+                    </p:column>
+                    <p:column sortBy="#{idea.owneridea.username}" headerText="Submitted By" width="105" style="white-space:normal !important;"
+                              filterBy="#{idea.owneridea.username} #{idea.owneridea.forename} #{idea.owneridea.surname} " filterMatchMode="contains">
+                        <h:outputText value="#{idea.owneridea.forename} #{idea.owneridea.surname} (#{idea.owneridea.username})"/>
+                    </p:column>
+                    <p:column headerText="Description" filterBy="#{ilc.partDescription(idea)}" filterMatchMode="contains"
+                              style="white-space:normal;" width="105">
+                        <h:outputText value="#{ilc.partDescription(idea)}"/>
+                    </p:column>
+                    <p:column headerText="Project Type" width="105" filterBy="#{ilc.getIdeaKind(idea)}" filterMatchMode="contains"
+                              style="white-space:normal;">
+                        <h:outputText value="#{ilc.getIdeaKind(idea)}"/>
+                    </p:column>
+                    <p:column headerText="Project Level" width="100"
+                              style="white-space:normal;">
+                        <h:outputText value="#{ilc.getIdeaGrade(idea)}"/>
+                    </p:column>
+                    <p:column headerText="Status" width="60" sortBy="#{idea.ideastatus.ideastatusname}">
+                        <h:outputText value="#{idea.ideastatus.ideastatusname}"/>
+                    </p:column>
+                    <p:column  width="60" >
+                        <f:facet name="header">
+                            <h:outputText value="Number of"/><br />
+                            <h:outputText value="Students"/>
+                        </f:facet>
+                        <h:outputText value="#{ilc.getNumberOfStudents(idea)}"/>
+                    </p:column>
+                    <p:column  width="70">
+                        <f:facet name="header">
+                            <h:outputText value="Number of"/><br />
+                            <h:outputText value="Supervisors"/>
+                        </f:facet>
+                        <h:outputText value="#{ilc.getNumberOfSupervisors(idea)}"/>
+                    </p:column>
+                    <p:column headerText="Actions" width="70" style="white-space:normal !important;">
+                        <p:commandButton value="Edit" action="allIdeasToEdit" rendered="#{userBean.isStaff() || userBean.isAdmin() || userBean.getUser().equals(idea.owneridea.username)}">
+                            <f:setPropertyActionListener value="#{idea}" target="#{userBean.tempidea}" />
+                        </p:commandButton>
+                        <p:commandButton value="Delete" action="#{ilc.deleteIdea(idea)}"
+                                        rendered="#{(ilc.allowedToDelete(idea)) &amp;&amp; (userBean.isStaff() || userBean.isAdmin() || userBean.getUser().equals(idea.owneridea.username))}">
+                        </p:commandButton>
+                        <br/>
+                        <h:outputText value="No deletion => Final Project" rendered="#{!ilc.allowedToDelete(idea) &amp;&amp; (userBean.isAdmin() || userBean.isStaff())}"/>
+                    </p:column>
+                </p:dataTable>  
+            </h:form>
+        </p:panel>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../main_template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="top">
+       
+    </ui:define>
+
+
+    <ui:define name="content">
+        <div style="margin-left: 200px;">
+            <h:form><p:commandButton value="Back" action="MarkingFormsView"/></h:form>
+            <h:form>
+                <p:panelGrid columns="2" >
+                    <h:outputText value="Name:"/>
+                    <p:inputText value="#{markingForms.selectedFormCategories.catid.catname}"/>
+                    <h:outputLabel value="Weight" />
+                    <p:inputText value="#{markingForms.selectedFormCategories.catweight}"/>
+                    <h:outputText value="Long Name:"/>
+                    <p:inputTextarea value="#{markingForms.selectedFormCategories.catid.catlongname}"  autoResize="false" style="resize: none" cols="35"/>
+                    <h:outputText value="Description:"/>
+                    <p:inputTextarea value="#{markingForms.selectedFormCategories.catid.catdescription}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt1.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt1Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt2.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt2Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt3.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt3Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt4.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt4Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt5.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt5Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt6.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt6Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt7.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt7Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt8.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt8Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt9.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt9Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <h:outputLabel value="#{markingForms.opt10.optLabel}"/>
+                    <p:inputTextarea value="#{markingForms.opt10Criteria}"  autoResize="false" style="resize: none" cols="35"/>
+
+                    <p></p>
+                    <p:panelGrid columns="2"> 
+                        <p:commandButton value="save" action="#{markingForms.registerNewCategoryOptionForm()}" />
+                        <p:commandButton value="clear" type="reset"/>               
+                    </p:panelGrid>
+                </p:panelGrid>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+    <ui:define name="messages">
+       
+    </ui:define>
+
+</ui:composition>

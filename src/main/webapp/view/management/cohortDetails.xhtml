@@ -1,0 +1,165 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel id="cohortDetails" header="Details of Cohort" >
+            <h:form id="dates" prependId="false" >
+                <table border="1" cellpadding="10" >
+                    <tr>
+                    <td>
+                    <h:outputLabel value="Label : "/> <h:inputText value="#{cohc.current.cohortlabel}" />
+                    </td>
+                    <td>
+                    <b>Period of project idea selection</b><br/>
+
+                    <h:outputLabel value="Start : " for="startChoice"/>
+                    <p:calendar id="startChoice" value="#{cohc.current.registerstart}" binding="#{startChoice}" pattern="dd.MM.yyyy" showButtonPanel="true">
+                        <f:ajax event="dateSelect" execute="startChoice endChoice" render="startChoiceError endChoiceError" />
+                        <f:ajax execute="startChoice endChoice" render="startChoiceError endChoiceError" />
+                    </p:calendar>
+                    <h:message styleClass="error" id="startChoiceError" for="startChoice"/>
+                    <br/>
+
+                    <h:outputLabel value="End :   " for="endChoice"/>
+                    <p:calendar id="endChoice" value="#{cohc.current.registerstop}" pattern="dd.MM.yyyy" showButtonPanel="true">               
+                        <f:validator validatorId="moreRecentThanValidator" />
+                        <f:attribute name="moreRecentThan" value="#{startChoice.value}" />
+                        <f:ajax event="dateSelect" execute="startChoice endChoice" render="endChoiceError" />
+                        <f:ajax execute="startChoice endChoice" render="endChoiceError" />
+                    </p:calendar>
+                    <h:message styleClass="error" id="endChoiceError" for="endChoice" />
+                    </td>
+
+                    <td>
+                    <b>Period for completion of projects</b><br/>
+
+                    <h:outputLabel value="Start : " for="startProject"/>
+                    <p:calendar id="startProject" value="#{cohc.current.projectstart}" binding="#{startProject}" pattern="dd.MM.yyyy" showButtonPanel="true">
+                        <f:ajax event="dateSelect" execute="startProject endProject" render="startProjectError endProjectError" />
+                        <f:ajax execute="startProject endProject" render="startProjectError endProjectError" />
+                    </p:calendar>
+                    <h:message styleClass="error" id="startProjectError" for="startProject"/>
+                    <br />
+
+                    <h:outputLabel value="End :   " for="endProject"/>
+                    <p:calendar id="endProject" value="#{cohc.current.projectstop}"  pattern="dd.MM.yyyy" showButtonPanel="true">
+                        <f:validator validatorId="moreRecentThanValidator" />
+                        <f:attribute name="moreRecentThan" value="#{startProject.value}" />
+                        <f:ajax event="dateSelect" execute="startProject endProject" render="endProjectError" />
+                        <f:ajax execute="startProject endProject" render="endProjectError" />
+                    </p:calendar>
+                    <h:message styleClass="error" id="endProjectError" for="endProject" />
+                    </td>
+                    <td>
+                    <h:commandButton id="saveButton" value="Save" actionListener="#{cohc.saveDates(e)}" />
+                    </td>
+                    <p:growl  />
+                    </tr>
+                </table>
+            </h:form>
+            <br/>
+            <h:form id="listUnit" prependId="false">
+                <p:dataTable value="#{cohc.current.units}" var="unitinstance" paginator="#{cohc.paged}" rows="10" 
+                             selectionMode="single" selection="#{oldUnitic.current}" rowKey="#{unitinstance.idunitinstance}"
+                             style="text-align: center;">
+                    <f:facet name="header">List of Units</f:facet>
+                    
+                    <p:column headerText="Unit">
+                        <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                    </p:column>
+                    <p:column headerText="Academic Year">
+                        <h:outputText value="#{unitinstance.academicyear.academicYearName}"/>
+                    </p:column>
+                    <p:column headerText="Confirm">
+                        <h:outputText style="#{oldUnitic.color}" value="#{oldUnitic.studentsToConfirm(unitinstance)}"/>
+                    </p:column>
+                    <f:facet name="footer"> 
+                        <p:commandButton id="viewButton" value="View" icon="ui-icon-search" update=":studentsToConfirm,:form"/>
+                    </f:facet>  
+                </p:dataTable>
+            </h:form>
+            <br/>
+            <h:form id="studentsToConfirm" prependId="false">
+                <p:dataTable id="listConfirm" value="#{oldUnitic.listStudentToConfirm}" var="upitc"
+                             selection="#{oldUnitic.selectedPerson}" rowKey="#{upitc.chosen.username}" style="text-align: center;">
+                    <f:facet name="header">Listings to be confirmed</f:facet>
+                    <p:column selectionMode="multiple" style="width:2%" />
+                    
+                    <p:column headerText="Username" sortBy="#{upitc.chosen.username}">
+                        <h:commandLink value="#{upitc.chosen.username}" action="toUserInfo">
+                            <f:setPropertyActionListener value="#{upitc.chosen}" target="#{pac.current}"/>
+                        </h:commandLink>
+                    </p:column>
+                    <p:column headerText="Surname" sortBy="#{upitc.chosen.username}">
+                        <h:outputText value="#{upitc.chosen.surname}"/>
+                    </p:column>
+                    <p:column headerText="Forename" sortBy="#{upitc.chosen.forename}">
+                        <h:outputText value="#{upitc.chosen.forename}"/>
+                    </p:column>
+                    <p:column headerText="Hemis number" sortBy="#{upitc.chosen.hemis}">
+                        <h:outputText value="#{upitc.chosen.hemis}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Action">
+                        <p:commandButton update=":studentsToConfirm,:listUnit" value="Confirm" >
+                            <f:setPropertyActionListener value="#{upitc}" target="#{oldUnitic.upiToConfirm}" />
+                        </p:commandButton>
+                        <p:commandButton update=":studentsToConfirm,:form,:listUnit" value="Delete" >
+                            <f:setPropertyActionListener value="#{upitc}" target="#{oldUnitic.upiToDelete}" />
+                        </p:commandButton>
+                    </p:column>
+                    
+                    <f:facet name="footer">  
+                        <p:commandButton id="multiConfirmButton" value="Confirm severel students" icon="ui-icon-check"  
+                                         update=":studentsToConfirm,:form,:listUnit" action="#{oldUnitic.unitPersonInSeveralConfirm}" />  
+                        <p:commandButton id="multiDeleteButton" value="Delete several students" icon="ui-icon-closethick"  
+                                         update=":studentsToConfirm,:form,:listUnit" action="#{oldUnitic.unitPersonInSeveralDelete}"/>  
+                    </f:facet>  
+                </p:dataTable>
+            </h:form>
+            <br/>
+            <h:form id="form" prependId="false" >
+                <p:dataTable id="listStudent" value="#{oldUnitic.listStudentAlreadyConfirm}" var="upi" 
+                             paginator="true" rows="10" style="text-align: center;"
+                             selection="#{oldUnitic.selectedPerson}" rowKey="#{upi.chosen.username}">
+                    <f:facet name="header">Students in the Unit</f:facet>
+                    <p:column selectionMode="multiple" style="width:2%" />
+                    
+                    <p:column headerText="Username" sortBy="#{upi.chosen.username}">
+                        <h:commandLink value="#{upi.chosen.username}" action="toUserInfo">
+                            <f:setPropertyActionListener value="#{upi.chosen}" target="#{pac.current}"/>
+                        </h:commandLink>
+                    </p:column>
+                    <p:column headerText="Surname" sortBy="#{upi.chosen.surname}">
+                        <h:outputText value="#{upi.chosen.surname}"/>
+                    </p:column>
+                    <p:column headerText="Forename" sortBy="#{upi.chosen.forename}">
+                        <h:outputText value="#{upi.chosen.forename}"/>
+                    </p:column>
+                    <p:column headerText="Hemis number" sortBy="#{upi.chosen.hemis}">
+                        <h:outputText value="#{upi.chosen.hemis}"/>
+                    </p:column>
+                    <p:column headerText="Action">
+                        <p:commandButton update=":studentsToConfirm,:form" value="Delete" >
+                            <f:setPropertyActionListener value="#{upi}" target="#{oldUnitic.upiToDelete}" />
+                        </p:commandButton>
+                    </p:column>
+                    
+                    <f:facet name="footer">
+                        <p:commandButton id="multiDeleteUnitButton" value="Delete several students" icon="ui-icon-closethick"  
+                                         update=":studentsToConfirm,:form,:listUnit" action="#{oldUnitic.unitPersonInSeveralDelete()}"/>  
+                    </f:facet>  
+                </p:dataTable>
+                
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
+

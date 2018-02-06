@@ -1,0 +1,37 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:f="http://java.sun.com/jsf/core"
+              >
+
+    <h:form id="UserEmail" rendered="#{userBean.admin || pac.myProfile}">
+        <fieldset><legend>Change Email</legend>
+            <h:panelGrid columns="3">
+                
+                <p:outputLabel for="email" value="New Email:" />
+                <p:inputText id="email" value="#{pac.email}"  binding="#{originalEmail}" required="true" requiredMessage="You must specify an email.">
+                    <f:validator validatorId="emailValidator" binding="#{emailValidator}"/>
+                    <f:ajax event="blur" execute="email confirmemail" render="emailError confirmemailError" />
+                </p:inputText>
+                <p:message id="emailError" for="email" />
+
+                <p:outputLabel for="confirmemail" value="Confirm Email :" />
+                <p:inputText id="confirmemail">
+                    <f:validator validatorId="copyOfValidator" />
+                    <f:attribute name="copyOf" value="#{originalEmail.value}" />
+                    <f:ajax event="blur" execute="email confirmemail" render="confirmemailError" />
+                </p:inputText>
+                <p:message id="confirmemailError" for="confirmemail" />
+
+            </h:panelGrid>
+            
+            <p:commandButton value="Save" action="#{pac.changeEmail}">
+                <f:param name="username" value="#{pac.current.username}" />
+            </p:commandButton>
+            <p:messages for="UserEmail" autoUpdate="true" closable="true" />
+        </fieldset>
+
+    </h:form>
+
+</ui:component>

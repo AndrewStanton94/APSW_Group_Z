@@ -1,0 +1,86 @@
+body {
+    background-color: #ffffff;
+    font-size: 12px;
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    color: #000000;
+    margin: 10px;
+}
+
+h1 {
+    font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    border-bottom: 1px solid #AFAFAF;
+    font-size:  16px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    color: #D20005;
+}
+
+a:link, a:visited {
+    color: #006FDD;
+    font-weight : bold;
+    text-decoration: none;
+}
+
+a:link:hover, a:visited:hover  {
+    color: #004499;
+    font-weight : bold;
+    text-decoration : underline;
+}
+
+.columnWidth{
+    /*width : 140px;*/
+}
+
+.mainmenu {
+    background-color: #F0F0F0;
+}
+
+.error{
+    color : red;
+}
+
+.datalist_noborder .ui-widget-content{
+	border:none;
+}
+
+.datatable_noborder td{
+	border: hidden !important;
+	text-align: left;
+}
+
+/*TODO : temporary fix for panel titlebar size bug. We should correct this bug*/
+.ui-panel-titlebar {
+    height: 20px;
+}
+
+
+.ui-panel-title {
+    font-size: 1.2em;
+}
+
+.infoPanel {
+    border-spacing: 5px;
+    border: 0;
+}
+
+legend {
+    font-size: 1.1em;
+}
+
+.subLabel {
+    margin-bottom: 2em;
+    margin-top: 2em;
+    margin-left: 2em;
+    font-weight:normal;
+}
+
+#content h3 {
+    display : block;
+    width: 100%;
+
+    margin-top: 1.5em;
+    padding-bottom: 0.2em;
+    border:0;
+    border-bottom: 2px solid lightgray;
+}

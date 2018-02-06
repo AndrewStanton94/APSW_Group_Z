@@ -1,0 +1,75 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Unit instance n°#{unitIc.current.idunitinstance}">
+            <h:form prependId="false">
+                
+                <h3>Details</h3>   
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="N°"/>
+                    <h:outputText value="#{unitIc.current.idunitinstance}"/>
+
+                    <h:outputLabel value="Kind"/>
+                    <h:outputText value="#{unitIc.current.unit.unitkind.kindname}"/>
+
+                    <h:outputLabel value="Unit"/>
+                    <h:commandLink value="#{unitIc.current.unit.unitcode} - #{unitIc.current.unit.unittitle}" action="toUnitDetails">
+                        <f:setPropertyActionListener value="#{unitIc.current.unit}" target="#{userBean.tempUnit}"/>
+                    </h:commandLink>
+
+                    <h:outputLabel value="Academic Year"/>
+                    <h:outputText value="#{unitIc.current.academicyear.academicYearName}" />         
+                </h:panelGrid>
+
+                <p:button value="Back to unit instances" icon="ui-icon-arrowreturnthick-1-w" outcome="toUnitInstance"/>
+                <p:commandButton value="Go to unit #{unitIc.current.unit.unitcode}" icon="ui-icon-arrowreturnthick-1-n" action="toUnitDetails" ajax="false">
+                    <f:setPropertyActionListener value="#{unitIc.current.unit}" target="#{userBean.tempUnit}"/>
+                </p:commandButton>
+                <p:button value="Edit" icon="ui-icon-pencil" outcome="toUnitInstanceEdit"/>
+                    
+                <h3>Students</h3>                  
+                <p:dataTable value="#{unitIc.current.unitpersoninList}" var="upi" paginator="true" rows="20" paginatorPosition="bottom">
+                    <f:facet name="header">
+                        <h:outputText value="Students in this Unit Instance (#{unitIc.current.unitpersoninList.size()})" />
+                    </f:facet>
+
+                    <p:column sortBy="#{upi.chosen.forename} #{upi.chosen.surname} (#{upi.chosen.username})">
+                        <f:facet name="header">
+                            <h:outputText value="Name"/>
+                        </f:facet>
+                        <h:commandLink value="#{upi.chosen.forename} #{upi.chosen.surname}" action="toUserInfo">
+                            <f:setPropertyActionListener value="#{upi.chosen}" target="#{pac.current}"/>
+                        </h:commandLink>
+                    </p:column>
+
+                    <p:column sortBy="#{upi.chosen.hemis}">
+                        <f:facet name="header">
+                            <h:outputText value="Hemis Number"/>
+                        </f:facet>
+                        <h:outputText value="#{upi.chosen.hemis}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{upi.chosen.username}">
+                        <f:facet name="header">
+                            <h:outputText value="Username"/>
+                        </f:facet>
+                        <h:outputText value="#{upi.chosen.username}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{upi.chosen.email}">
+                        <f:facet name="header">Email</f:facet>
+                        <h:outputText value="#{upi.chosen.email}"/>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

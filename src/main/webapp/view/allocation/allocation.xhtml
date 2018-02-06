@@ -1,0 +1,42 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <p:panel header="Allocation">
+            <h:form id="Allocation" >
+                <p:dataTable value="#{allocationController.list}" var ="rs"  style="text-align: center;">
+
+                    <p:column headerText="Project Idea" style="white-space:normal">
+                        <h:commandLink value="#{rs.projectidea.ideatitle}" action="/view/ideas/ideadetails.xhtml">
+                            <f:setPropertyActionListener target="#{userBean.tempidea}" value="#{rs.projectidea}" />
+                        </h:commandLink>
+                    </p:column>
+
+                    <p:column headerText="Student">
+                        <h:outputText value="#{rs.student.forename} #{rs.student.surname} (#{rs.student.username})" />
+                    </p:column>
+
+                    <p:column headerText="Supervisor">
+                        <h:outputText value="#{rs.supervisor.forename} #{rs.supervisor.surname} (#{rs.supervisor.username})" />
+                    </p:column>
+
+                    <p:column headerText="Total Score">
+                        <h:outputText value="#{rs.ranksum}" />
+                    </p:column>
+
+                    <p:column headerText="Actions">
+                        <p:commandButton value="Allocate the idea" action="#{allocationController.confirm(rs)}" update=":Allocation"/>
+                        <p:commandButton value="Other students and supervisors" action="toAllocationsByProjectIdea">
+                            <f:setPropertyActionListener value="#{rs.projectidea}" target="#{appc.current}" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

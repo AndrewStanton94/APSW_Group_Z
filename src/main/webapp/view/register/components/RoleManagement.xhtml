@@ -1,0 +1,18 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:f="http://java.sun.com/jsf/core"
+              >
+
+    <h:form id="RoleManagement" rendered="#{userBean.admin}">
+        <fieldset><legend>Roles</legend>
+            <p:selectManyCheckbox value="#{pac.current.roles}" converter="roleNameConverter">
+                <f:selectItems value="#{roleNameController.itemsAvailableSelectMany}"/>
+            </p:selectManyCheckbox>
+            <h:commandButton value="Change roles" action="#{grouptableController.addGroups(pac.current)}">
+                <f:param name="username" value="#{pac.current.username}" />
+            </h:commandButton>
+        </fieldset>
+    </h:form>
+</ui:component>

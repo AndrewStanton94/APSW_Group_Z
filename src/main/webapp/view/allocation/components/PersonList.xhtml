@@ -1,0 +1,30 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+			  xmlns:ui="http://java.sun.com/jsf/facelets"
+			  xmlns:p="http://primefaces.org/ui"
+			  xmlns:h="http://java.sun.com/jsf/html"
+			  xmlns:f="http://java.sun.com/jsf/core"
+			  >
+
+	<h:form id="PersonList" >
+		<p:dataTable value="#{personList}" var="person" paginator="true" rows="50"
+                             style="text-align: center;">
+			<f:facet name="header">#{title}</f:facet>
+			<p:column headerText="Name" sortBy="#{person.surname}"
+                                  filterBy="#{person.forename} #{person.surname} #{person.username}">
+				<h:commandLink value="#{person.forename} #{person.surname} (#{person.username})" action="toUserInfo">
+					<f:setPropertyActionListener value="#{person}" target="#{pac.current}"/>
+				</h:commandLink>
+			</p:column>
+
+			<p:column headerText="Email" sortBy="#{person.email}">
+				<h:outputText value="#{person.email}"/>
+			</p:column>
+
+			<p:column headerText="Actions" rendered="#{column1}">
+                                <p:commandButton value="Select" action="#{projectController.selectSupervisor(null,person)}"/>
+			</p:column>
+
+		</p:dataTable>
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+	</h:form>
+</ui:component>

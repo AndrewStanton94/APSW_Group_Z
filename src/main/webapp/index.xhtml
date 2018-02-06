@@ -1,0 +1,77 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>SUMS Home</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel>
+            <h3>Students &amp; Units Management System - University of Portsmouth</h3>
+            <h:panelGroup rendered="#{userBean.loggedIn}">
+                <h:outputText  value="Welcome #{userBean.loggedInUser.fullname}"/>
+            </h:panelGroup>
+        </p:panel>
+        <!-- Personnal message in order of the rank of the person connected -->
+        <h:panelGroup rendered="#{userBean.loggedIn}">
+            <br/>
+            <h:panelGroup rendered="#{userBean.admin}">
+                Here's the list of all the projects in pending to mark :
+            </h:panelGroup>
+            <h:panelGroup rendered="#{userBean.staff and !userBean.admin}">
+                Here's the list of the projects you have to mark :
+            </h:panelGroup>
+            <h:panelGroup rendered="#{userBean.student and !userBean.admin}">
+                Here's the list of your projects that need to be marked :
+            </h:panelGroup>
+            <br/><br/>
+            <h:form>
+                <!-- Get the list of all the projects and put them in a var called "project" -->
+                <p:dataTable id="AllocatedProjectList" value="#{projectListController.list}" var="project">
+                    <p:column headerText="Student" >
+                        <!-- Foreach project, get all the students on a specific project and so on for the others informations -->
+                        <h:dataTable value="#{fpc.getStudentList(project)}" var="studentInProject" styleClass="datatable_noborder">
+                            <p:column>
+                                <p:commandLink value="#{studentInProject.forename} #{studentInProject.surname}"
+                                               action="toUserInfo" >
+                                    <f:setPropertyActionListener value="#{studentInProject}" target="#{pac.current}" />
+                                </p:commandLink>
+                            </p:column>
+                        </h:dataTable>
+                    </p:column>
+
+                    <p:column headerText="Title" style="text-align: center;">
+                        <h:commandLink rendered="#{userBean.staff || userBean.admin}" value="#{project.projecttitle}" action="toProjectDetails" >
+                            <f:setPropertyActionListener value="#{project}" target="#{fpc.current}" />
+                        </h:commandLink>
+                    </p:column>
+
+                    <p:column headerText="Related Staff" style="text-align: center;">
+                        <h:dataTable value="#{fpc.getStaffList(project)}"
+                                     var="spr" styleClass="datatable_noborder">
+                            <h:column>
+                                <h:outputText value="#{spr.staffstatus.statusname}: " />
+                                <h:commandLink value="#{spr.person.forename} #{spr.person.surname}"
+                                               action="toUserInfo" >
+                                    <f:setPropertyActionListener value="#{spr.person}" target="#{pac.current}" />
+                                </h:commandLink>
+                            </h:column>
+                        </h:dataTable>
+                    </p:column>
+
+                    <p:column headerText="Status" style="text-align: center;">
+                        <h:outputText value="#{project.finalMarkStatus}"/>
+                    </p:column>
+
+                    <p:column headerText="Planned Submission Date" style="text-align: center;">
+                        <h:outputText value="#{project.plannedsubmissiondate}">
+                            <f:convertDateTime pattern="dd MMM yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

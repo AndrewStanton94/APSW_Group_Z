@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="top">
+        <p><h2>Project Feedback</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="All Project's Feedback">         
+            <h:form>
+                <h:panelGroup rendered="#{not empty feedbackController.list}">
+                    <p:dataTable value="#{feedbackController.list}" var="project" paginator="true" rows="25">
+                        <p:column sortBy="#{project.student.forename} #{project.student.surname} (#{project.student.hemis})">                           
+                            <f:facet name="header" >
+                                Name                               
+                            </f:facet>
+                            <h:outputText value="#{project.student.forename} #{project.student.surname} (#{project.student.hemis})"/>
+                        </p:column>
+                        <p:column>                           
+                            <f:facet name="header" >
+                                Mark                              
+                            </f:facet> 
+                            <h:outputText value="#{project.finalMark}"/>
+                        </p:column>
+                        <p:column>                           
+                            <f:facet name="header">Feedback Read</f:facet> 
+                            <h:outputText value="#{project.feedback.viewedDate}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Email Confirmation</f:facet>
+                            <h:outputText value="#{project.feedback.feedbackSent}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Feedback Options</f:facet>
+                            <h:commandButton value="Review" action="/view/feedback/feedbackedit.xhtml" rendered="#{project.feedback.viewedDate.equalsIgnoreCase('Not Read')}">
+                                <f:setPropertyActionListener value="#{project}" target="#{reviewFeedbackController.currentProject}" />
+                            </h:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+                
+                <h:commandButton value="Send Feedback" action="#{feedbackController.sendConfirmedFeedback()}"/>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

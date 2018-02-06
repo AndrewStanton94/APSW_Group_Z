@@ -1,0 +1,323 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="global">
+            <p:panel id="unitList" rendered="#{uc.opDisplayList}" header="List of Units">
+                <h:form prependId="false">
+                    <p:commandButton value="New Unit" update=":global" actionListener="#{uc.addUnit}"/>
+                    <br/><br/>
+                    <p:dataTable value="#{uc.items}" var="unit" paginator="true" rows="30">
+                        <p:column sortBy="#{unit.unitcode}">
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <p:commandLink value="#{unit.unitcode}" update=":global" actionListener="#{uc.unitDetails}">
+                                <f:setPropertyActionListener target="#{uc.current}" value="#{unit}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{unit.unittitle}">
+                            <f:facet name="header">
+                                <h:outputText value="Title" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unittitle}"/>
+                        </p:column>
+                        <p:column sortBy="#{unit.unitkind.kindname}">
+                            <f:facet name="header">
+                                <h:outputText value="Kind" />
+                            </f:facet>
+                            <h:outputText value="#{unit.unitkind.kindname}"/>
+                        </p:column>
+                        <p:column style="width: 20px">
+                            <p:commandButton value="Edit" actionListener="#{uc.editUnit}" update=":global">
+                                <f:setPropertyActionListener target="#{uc.current}" value="#{unit}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+            <p:panel id="addUnit" header="Add a new Unit" rendered="#{uc.opAddUnit}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><p:inputText validatorMessage="Must have 6 alphanumeric characters" value="#{uc.newItem.unitcode}">
+                            <f:validateRegex pattern="^[a-zA-Z0-9]{6}$" />
+                        </p:inputText>
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{uc.newItem.unittitle}" required="true"/>
+                        <h:outputLabel style="font-weight: bold" value="Kind"/>
+                        <h:selectOneMenu value="#{uc.kind}" >
+                            <f:selectItems
+                                value="#{kc.items}"
+                                var="uk"
+                                itemValue="#{uk.idkind}"
+                                itemLabel="#{uk.kindname}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel style="font-weight: bold" value="Grade"/>
+                        <h:selectOneMenu value="#{uc.grade}" >
+                            <f:selectItems
+                                value="#{gc.items}"
+                                var="ug"
+                                itemValue="#{ug.idgrade}"
+                                itemLabel="#{ug.gradename}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <p:commandButton value="Create" action="#{uc.doAdd}"  actionListener="#{uc.displayList}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{uc.displayList}" render="global"/>
+                    </p:button>
+                    <p:messages/>
+                </h:form>
+            </p:panel>
+            <p:panel header="#{uc.current.unittitle}" rendered="#{uc.opUnitDetails}">
+                <h:form prependId="false">
+                    <br/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><h:outputText value="#{uc.current.unitcode}"/>
+                        <h:outputLabel style="font-weight: bold" value="Title"/><h:outputText value="#{uc.current.unittitle}"/>
+                        <h:outputLabel style="font-weight: bold" value="Kind"/><h:outputText value="#{uc.current.unitkind.kindname}"/>
+                
+                    </h:panelGrid>
+                    <br/>
+                    <p:commandButton value="Back" actionListener="#{uc.displayList}" update=":global"/>
+                    <p:commandButton value="Edit" actionListener="#{uc.editUnit}" update=":global"/>
+                    <br /><br/>
+                    <p:panel>
+                        <p:dataTable value="#{uc.current.unitinstanceList}" var="unitinstance" paginator="true" rows="20">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Title" />
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.unitinstancetitle}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:commandLink value="Academic year" action="#{uc.sortList()}">
+                                        <f:ajax execute="@form" render="@form"/>
+                                        <f:param name="unitCode" value="#{uc.current.unitcode}"/>
+                                    </h:commandLink>
+                                </f:facet>
+                                <h:outputText value="#{unitinstance.academicyear.startdate}">
+                                    <f:convertDateTime pattern="MMM dd, yyyy /"/>
+                                </h:outputText>
+                                <h:outputText value="#{unitinstance.academicyear.enddate}">
+                                    <f:convertDateTime pattern=" MMM dd, yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </p:panel>
+            <p:panel header="#{uc.current.unittitle}" rendered="#{uc.opEditUnit}">
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel style="font-weight: bold" value="Code"/><p:inputText disabled="true" value="#{uc.current.unitcode}"/>
+                        <h:outputLabel style="font-weight: bold" value="Title"/><p:inputText value="#{uc.current.unittitle}"/>
+                        <h:outputLabel style="font-weight: bold" value="Kind"/>
+                        <h:selectOneMenu value="#{uc.kind}" >
+                            <f:selectItems
+                                value="#{kc.items}"
+                                var="uk"
+                                itemValue="#{uk.idkind}"
+                                itemLabel="#{uk.kindname}"/>
+                        </h:selectOneMenu>
+                        <h:outputLabel style="font-weight: bold" value="Grade"/>
+                        <h:selectOneMenu value="#{uc.grade}" >
+                            <f:selectItems
+                                value="#{gc.items}"
+                                var="ug"
+                                itemValue="#{ug.idgrade}"
+                                itemLabel="#{ug.gradename}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Save" action="#{uc.doEdit}" actionListener="#{uc.unitDetails}" update=":global"/>
+                    <p:button value="Cancel">
+                        <f:ajax execute="@this" event="click" listener="#{uc.displayList}" render="global"/>
+                    </p:button>
+                </h:form>
+            </p:panel>
+
+
+
+
+        </h:panelGroup>
+
+        <!--
+                        <h:form prependId="false">
+                            <fieldset><legend>Courses</legend>
+                                <h:dataTable value="#{cc.items}" var="course" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Code" />
+                                        </f:facet>
+                                        <h:outputText value="#{course.coursecode}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{course.coursename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Cohorts">
+                        <h:form prependId="false">
+                            <fieldset><legend>Cohorts</legend>
+                                <h:dataTable value="#{cohc.items}" var="cohort" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Label" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.cohortlabel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registration end" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.registerstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Projects start" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstart}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Project stop" />
+                                        </f:facet>
+                                        <h:outputText value="#{cohort.projectstop}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy" timeZone="Europe/London"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="UnitInstances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Unit instances</legend>
+                                <h:dataTable value="#{unitic.items}" var="unitinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Title" />
+                                        </f:facet>
+                                        <h:outputText value="#{unitinstance.unitinstancetitle}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Academic year" />
+                                        </f:facet>
+                                        <h:outputText value="#{unitinstance.academicyear.startdate}">
+                                            <f:convertDateTime pattern="MMM dd, yyyy /"/>
+                                        </h:outputText>
+                                        <h:outputText value="#{unitinstance.academicyear.enddate}">
+                                            <f:convertDateTime pattern=" MMM dd, yyyy"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Unit" />
+                                        </f:facet>
+                                        <h:outputText value="#{unitinstance.unit.unitcode} "/>
+                                        <h:outputText value="#{unitinstance.unit.unittitle}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+
+                            </fieldset>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Course Instances">
+                        <h:form prependId="false">
+                            <fieldset><legend>Course instances</legend>
+                                <h:dataTable value="#{cic.items}" var="courseinstance" border="1">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:selectBooleanCheckbox styleClass="checkall" value="false" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="false"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Name" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.courseinstancename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Level" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.courselevel}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Course" />
+                                        </f:facet>
+                                        <h:outputText value="#{courseinstance.course.coursecode} #{courseinstance.course.coursename}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions" />
+                                        </f:facet>
+                                    </h:column>
+                                </h:dataTable>
+                            </fieldset>
+
+                        </h:form>
+        -->
+    </ui:define>
+</ui:composition>
+

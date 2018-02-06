@@ -1,0 +1,69 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Unit">
+            <h:form id="unitDetailsForm" prependId="false">
+                <h3>
+                    <h:outputText value="Edition" rendered="#{!uec.creationMode}"/>
+                    <h:outputText value="Creation" rendered="#{uec.creationMode}"/>
+                </h3>
+
+                <h:panelGrid columns="3">
+                    <h:outputLabel value="Title:" for="unitTitle"/>
+                    <h:inputText id="unitTitle" value="#{uec.current.unittitle}" required="true" requiredMessage="You must specify a title.">
+                        <f:validator binding="#{freeUnitTitleValidator}" />
+                        <f:attribute name="unitCode" value="#{unitCode.value}" />
+                        <f:ajax event="blur" render="unitTitleError"/>
+                    </h:inputText>
+                    <h:message class="error" id="unitTitleError" for="unitTitle"/>
+
+                    <h:outputLabel value="Code:" for="unitCode"/>
+                    <h:inputText id="unitCode" value="#{uec.current.unitcode}" binding="#{unitCode}" disabled="#{!uec.creationMode}" required="true" requiredMessage="You must specify a code.">
+                        <f:validator validatorId="unitCodeValidator"/>
+                        <f:validator binding="#{freeUnitCodeValidator}"/>
+                        <f:ajax event="blur" render="unitCodeError"/>
+                    </h:inputText>
+                    <h:message class="error" id="unitCodeError" for="unitCode"/>
+
+                    <h:outputLabel value="Kind:" for="unitKind"/>
+                    <h:selectOneMenu id="unitKind" value="#{uec.current.unitkind}" required="true" requiredMessage="You must specify a kind.">
+                        <f:selectItems value="#{kc.items}" var="kind" itemValue="#{kind}" itemLabel="#{kind.kindname}"/>
+                        <f:ajax event="blur" render="unitKindError"/>
+                    </h:selectOneMenu>
+                    <h:message class="error" id="unitKindError" for="unitKind"/>
+
+                    <h:outputLabel value="Level:" for="unitLevel"/>
+                    <h:selectOneMenu id="unitLevel" value="#{uec.current.courseLevel}" required="true" requiredMessage="You must specify a course level.">
+                        <f:selectItems value="#{gc.items}" var="level" itemValue="#{level}" itemLabel="#{level.name}"/>
+                    </h:selectOneMenu>
+                    <h:message class="error" id="unitLevelError" for="unitLevel"/>
+                </h:panelGrid>
+
+                <p:commandButton value="Cancel" icon="ui-icon-cancel" action="toUnitDetails" ajax="false"  immediate="true" rendered="#{!uec.creationMode}">
+                    <f:setPropertyActionListener value="#{uec.originalUnit}" target="#{userBean.tempUnit}"/>
+                </p:commandButton>
+                <p:commandButton value="Cancel" icon="ui-icon-cancel" action="toUnit" ajax="false"  immediate="true" rendered="#{uec.creationMode}">
+                    <f:setPropertyActionListener value="#{null}" target="#{userBean.tempUnit}"/>
+                </p:commandButton>
+
+                <p:commandButton value="Reset" icon="ui-icon-arrowrefresh-1-s" type="reset" rendered="#{!uec.creationMode}" />
+
+                <p:commandButton value="Save" icon="ui-icon-disk" action="#{uec.edit()}" rendered="#{!uec.creationMode}">
+                    <f:setPropertyActionListener value="#{uec.current}" target="#{userBean.tempUnit}"/>
+                </p:commandButton>
+                <p:commandButton value="Save" icon="ui-icon-disk" action="#{uec.add()}" rendered="#{uec.creationMode}">
+                    <f:setPropertyActionListener value="#{uec.current}" target="#{userBean.tempUnit}"/>
+                </p:commandButton>
+                
+            </h:form>
+            <p:messages for="unitDetailsForm"/>
+        </p:panel>
+    </ui:define>
+</ui:composition>

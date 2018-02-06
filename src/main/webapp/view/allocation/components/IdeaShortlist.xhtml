@@ -1,0 +1,46 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+                          xmlns:ui="http://java.sun.com/jsf/facelets"
+                          xmlns:p="http://primefaces.org/ui"
+                          xmlns:h="http://java.sun.com/jsf/html"
+                          xmlns:f="http://java.sun.com/jsf/core"
+                          >
+
+    <h:form  >
+        <p:dataTable value="#{ideaList}" var="ideaChoice" style="text-align: center;">
+            <f:facet name="header">Chosen Ideas</f:facet>
+            <p:column headerText="Rank">
+                <h:outputFormat value="#{ideaChoice.idearank}"/>
+            </p:column>
+
+            <p:column headerText="Title">
+                <h:commandLink value="#{ideaChoice.projectidea.ideatitle}" action="/view/ideas/ideadetails.xhtml">
+                    <f:setPropertyActionListener target="#{userBean.tempidea}" value="#{ideaChoice.projectidea}" />
+                </h:commandLink>
+            </p:column>
+
+            <p:column headerText="Description" style="white-space:normal !important;">
+                <h:outputText value="#{ideaChoice.projectidea.description}"/>
+            </p:column>
+
+            <p:column headerText="Status">
+                <h:outputText value="#{ideaChoice.projectidea.ideastatus.ideastatusname}"
+                              style="#{projectController.styleAvailable(ideaChoice.projectidea)}"/>
+            </p:column>
+
+            <p:column headerText="Actions" width="75">
+                <h:commandButton image="/resources/images/arrow-090.png" alt="Rank up" action="#{projectController.rankIdeaUp(ideaChoice)}">
+                    <f:ajax render="@form" execute="@form"/>
+                </h:commandButton>
+                <h:commandButton image="/resources/images/arrow-270.png" alt="Rank down" action="#{projectController.rankIdeaDown(ideaChoice)}">
+                    <f:ajax render="@form" execute="@form"/>
+                </h:commandButton>
+                <h:commandButton image="/resources/images/cross.png" alt="Delete" action="#{projectController.removeIdea(ideaChoice)}">
+                    <f:ajax render="@form" execute="@form"/>
+                </h:commandButton>
+            </p:column>
+
+        </p:dataTable>
+
+        <h:commandButton value="Pick ideas" rendered="#{projectController.toPickIdeas()}"/>
+    </h:form>
+</ui:component>

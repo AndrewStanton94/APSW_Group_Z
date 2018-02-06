@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Register with SUMS</h2></p>
+    </ui:define>
+    <ui:define name="content" >
+        <f:view >
+
+            <p:panel header="Register Yourself">
+                <h:form id="Register">
+                    <h:panelGrid id="panelSubscribe" columns="3" columnClasses="columnWidth">
+                        <h:outputLabel value="Username :" for="username"/>
+                        <h:inputText id="username" value="#{prc.newItem.username}" required="true" requiredMessage="You must specify a username.">
+                            <f:validator validatorId="usernameValidator"/>
+                            <f:validator binding="#{freeUsernameValidator}"/>
+                            <f:ajax event="blur" execute="@this" render="usernameError"/>
+                        </h:inputText>
+                        <h:message styleClass="error" id="usernameError"  for="username"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="3" columnClasses="columnWidth">
+                        <h:outputLabel value="Forename :" for="forename"/>
+                        <h:inputText id="forename" value="#{prc.newItem.forename}" required="true" requiredMessage="You must specify a forename." >
+                            <f:validator validatorId="forenameValidator"/>
+                            <f:ajax event="blur" execute="@this" render="forenameError"/>
+                        </h:inputText>
+                        <h:message styleClass="error" id="forenameError" for="forename"/>
+
+                        <h:outputLabel value="Surname :" for="surname"/>
+                        <h:inputText id="surname" value="#{prc.newItem.surname}" required="true" requiredMessage="You must specify a surname.">
+                            <f:validator validatorId="surnameValidator"/>
+                            <f:ajax event="blur" execute="@this" render="surnameError"/>
+                        </h:inputText>
+                        <h:message styleClass="error" id="surnameError" for="surname"/>
+
+                        <h:outputLabel for="password" value="Password:" />
+                        <h:inputSecret id="password" value="#{prc.newItem.password}"  binding="#{originalPassword}" required="true" requiredMessage="You must specify a password.">
+                            <f:validator validatorId="passwordValidator" />
+                            <f:ajax event="blur" execute="password confirmpassword" render="passwordError confirmpasswordError" />
+                        </h:inputSecret>
+                        <h:message styleClass="error" id="passwordError" for="password" />
+
+                        <h:outputLabel for="confirmpassword" value="Confirm Password :" />
+                        <h:inputSecret id="confirmpassword">
+                            <f:validator validatorId="copyOfValidator" />
+                            <f:attribute name="copyOf" value="#{originalPassword.value}" />
+                            <f:ajax event="blur" execute="password confirmpassword" render="confirmpasswordError" />
+                        </h:inputSecret>
+                        <h:message styleClass="error" id="confirmpasswordError" for="confirmpassword" />
+
+                        <h:outputLabel for="email" value="Email address:" />
+                        <h:inputText id="email" value="#{prc.newItem.email}"  binding="#{originalEmail}" required="true" requiredMessage="You must specify an email.">
+                            <f:validator validatorId="emailValidator" />
+                            <f:validator binding="#{freeEmailValidator}" />
+                            <f:ajax event="blur" execute="email confirmemail" render="emailError confirmemailError" />
+                        </h:inputText>
+                        <h:message styleClass="error" id="emailError" for="email" />
+
+                        <h:outputLabel for="confirmemail" value="Confirm Email :" />
+                        <h:inputText id="confirmemail">
+                            <f:validator validatorId="copyOfValidator" />
+                            <f:attribute name="copyOf" value="#{originalEmail.value}" />
+                            <f:ajax event="blur" execute="email confirmemail" render="confirmemailError" />
+                        </h:inputText>
+                        <h:message styleClass="error" id="confirmemailError" for="confirmemail" />
+
+                        <h:outputLabel for="UserStatus" value="Role:"/>
+                        <h:selectManyCheckbox id="UserStatus" value="#{prc.newItem.roles}" converter="roleNameConverter" >
+                            <f:selectItems value="#{roleNameController.userItemsAvailableSelectOne}}"/>
+                            <f:validator validatorId="userStatusMenuValidator" />
+                            <f:ajax execute="UserStatus" render="UserStatusError gridexternal gridstudent" />
+                        </h:selectManyCheckbox>
+                        <h:message styleClass="error" id="UserStatusError" for="UserStatus" />
+                    </h:panelGrid>
+
+                    <h:panelGroup id="gridexternal">
+                        <h:panelGroup rendered="#{prc.displayExternal}">
+                            <fieldset>
+                                <legend>Your Organisation</legend>
+                                <h:panelGrid  columns="3" columnClasses="columnWidth">
+
+                                    <h:outputLabel for="organisationName" value="Organization name :"/>
+                                    <h:inputText id="organisationName" maxlength="64" value="#{prc.organisation.nameorganisation}" required="true" requiredMessage="You must specify the name of your organization.">
+                                        <f:ajax event="blur" execute="@this" render="organisationNameError"/>
+                                    </h:inputText>
+                                    <h:message styleClass="error" id="organisationNameError" for="organisationName"/>
+
+                                    <h:outputLabel for="postalAddress" value="Postal address :"/>
+                                    <h:inputText id="postalAddress" maxlength="256" value="#{prc.organisation.mailingaddress}" required="true" requiredMessage="You must specify the address of your organization.">
+                                        <f:ajax event="blur" execute="@this" render="postalAddressError"/>
+                                    </h:inputText>
+                                    <h:message styleClass="error" id="postalAddressError" for="postalAddress"/>
+
+                                    <h:outputLabel for="postCode" value="Post code :"/>
+                                    <h:inputText id="postCode" maxlength="16" value="#{prc.organisation.postcode}" required="true" requiredMessage="You must specify a postal code.">
+                                        <f:validator validatorId="PostCodeValidator" />
+                                        <f:ajax event="blur" execute="@this" render="postCodeError"/>
+                                    </h:inputText>
+                                    <h:message styleClass="error" id="postCodeError" for="postCode"/>
+
+                                    <h:outputLabel for="organisationActivity" value="Organization activity :"/>
+                                    <h:inputText id="organisationActivity" maxlength="128" value="#{prc.organisation.activity}" required="true" requiredMessage="You must specify the activity of your organization.">
+                                        <f:ajax event="blur" execute="@this" render="organisationActivityError"/>
+                                    </h:inputText>
+                                    <h:message styleClass="error" id="organisationActivityError" for="organisationActivity"/>
+
+                                    <br />
+                                </h:panelGrid>
+                            </fieldset>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="gridstudent">
+                        <h:panelGrid rendered="#{prc.displayStudent}" columns="3" columnClasses="columnWidth">
+
+                            <h:outputLabel value="Student ID number :" for="hemisNumber"/>
+                            <h:inputText id="hemisNumber" maxlength="16" value="#{prc.hemis}" required="true" requiredMessage="You must specify your student number.">
+                                <f:validator validatorId="HemisNumberValidator" />
+                                <f:ajax event="blur" execute="@this" render="hemisNumberError"/>
+                            </h:inputText>
+                            <h:message styleClass="error" id="hemisNumberError"  for="hemisNumber"/>
+
+                            <br />
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:outputLabel value="Contact points :"/>
+                    <h:inputText id="contactPoints" value="#{prc.newItem.contactpoints}" size="512" style="height: 50px; width: 50%" />
+
+                    <br />
+
+                    <h:commandButton value="Register" action="#{prc.doAdd}"/>
+
+
+                </h:form>
+
+                <br />
+                <h:form>
+                    <h:commandLink action="toIndex">
+                        <h:outputText value="Index"/>
+                    </h:commandLink>
+                </h:form>
+            </p:panel>
+        </f:view>
+    </ui:define>
+</ui:composition>

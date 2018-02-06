@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/view/main_template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <ui:define name="top">
+        <p><h2>Marking Forms</h2></p>
+    </ui:define>
+    
+    <ui:define name="content">      
+        <p:panel header="Available Forms" rendered="#{!mfc.currentSet}">
+            <h:form>
+                <f:view>
+                    <h:form>
+                        <h1><h:outputText value="List"/></h1>
+                        <p:dataTable value="#{newMarkFormBean.findByUnitInstance}" var="item">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Umfid"/>
+                                </f:facet>
+                                <h:outputText value="#{item.umfid}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="UnitId"/>
+                                </f:facet>
+                                <h:outputText value="#{item.unitId}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="FormId"/>
+                                </f:facet>
+                                <h:outputText value="#{item.formId}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="UnitInstance"/>
+                                </f:facet>
+                                <h:outputText value="#{item.unitInstance}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </f:view>
+
+                <h:dataTable value="#{mfc.project.unitinstance.unit.unitMarkFormsList}" var="umf" styleClass="datatable_noborder" >
+                    <h:column>
+                        <h:commandLink value="#{umf.formId.formname}">
+                            <f:setPropertyActionListener value="#{umf.formId}" target="#{mfc.current}" />
+                        </h:commandLink>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </p:panel>
+
+        <p:panel header="Marking Form  -  Project : #{mfc.project.projecttitle}" rendered="#{mfc.currentSet}">
+            <h:form id="MarkingNotes">
+                <fieldset><legend>#{mfc.current.formname}</legend>
+                    <h:panelGrid id="panelNotes" columns="4"  columnClasses="columnWidth" cellspacing="2">
+                        <h:outputLabel value="Names of Students :" style="font-size: big; font-weight: bold;"/>
+                        <h:dataTable value="#{mfc.project.student}" var="studentInProject" styleClass="datatable_noborder">
+                            <h:column>
+                                <h:commandLink value="#{studentInProject.forename} #{studentInProject.surname}"
+                                               action="toUserInfo" >
+                                    <f:setPropertyActionListener value="#{studentInProject}" target="#{pac.current}" />
+                                </h:commandLink>
+                            </h:column>
+                        </h:dataTable>
+                        <h:outputLabel value="Supervisor:" style="font-size: big; font-weight: bold;"/>
+                        <h:outputLabel value="#{fpc.getProjectSupervisor(mfc.project).forename} #{fpc.getProjectSupervisor(mfc.project).surname}"/>
+
+                        <h:outputLabel value="Project unit :" style="font-size: big; font-weight: bold;"/>
+                        <h:outputLabel value="#{mfc.project.unitinstance.unit.unittitle}"/>
+                        <h:outputLabel value="Marker :" style="font-size: big; font-weight: bold;"/>
+                        <h:outputFormat value="#{mfc.userObject.forename}   #{mfc.userObject.surname }" escape="true"/>
+
+                    </h:panelGrid>
+                </fieldset>
+            </h:form>
+
+            <h:form id="MarkingTable" prependId="false" >
+
+                <!-- <p:tooltip/>
+                TODO : understand why there is an error detected here.
+                This tag seems to be correctly used (http://www.primefaces.org/showcase/ui/tooltipGlobal.jsf#).
+                If it is a real error, it seems not to affect the navigation. The error message may be a bug of netbeans ? -->
+
+                <p:dataTable value="#{mfc.currentCatMarks}" var="dataItem" id="markTable">
+                    <p:column style="font-size:smaller" headerText="Category">
+                        <h:outputText value="#{dataItem.catId.catname}"
+                                      title="#{dataItem.catId.catlongname}: #{dataItem.catId.catdescription}" />
+                    </p:column>
+
+                    <p:column style="font-size:smaller" headerText="Weight">
+                        <h:outputText value="#{dataItem.catId.markFormCategoriesList.get(0).catweight}"/>
+                    </p:column>
+                    <c:forEach items="#{mfc.markOptionListForCategoryMark(dataItem)}" var="opt">
+                        <p:column style="font-size:smaller" headerText="#{(opt.optionId.optLabel==null) ? 'Test' :  opt.optionId.optLabel}">
+                            <h:selectBooleanCheckbox value="#{opt.selectedBool}"  disabled="#{mfc.disabledFields}"
+                                                     title="#{mfc.getOptionTooltip(opt,dataItem )}">
+                                <f:ajax execute="@this" render=":MarkingTable:overallMark categoryMark"  event="click"   />
+                            </h:selectBooleanCheckbox>
+                        </p:column>
+
+
+                    </c:forEach>
+
+
+                    <p:column style="font-size:smaller">
+                        <f:facet name="header">
+                            <h:outputText value="Comments (optional)"/><br />
+                            <h:outputText value="[These may be notified to the student]"/>
+                        </f:facet>
+                        <h:inputTextarea value="#{dataItem.catComment}" disabled="#{mfc.disabledFields}"/>
+                    </p:column>
+
+                    <p:column id="markColumn" style="font-size:smaller" headerText="Category Mark">
+                        <h:outputText value="#{mfc.marks(dataItem)}" id="categoryMark"/>
+                    </p:column>
+                </p:dataTable>
+
+                <p:spacer height="5"/>
+
+                <table colspan="4" rowspan="4" >
+                    <tr>
+                        <td align="right"  >
+                            <h:outputLabel value="Adjustment"/>
+                        </td>
+                        <td align="left">
+                            <h:panelGrid columns="1" style="margin-bottom:10px">
+
+                                <h:panelGroup>
+                                    <h:outputText value="Set to "/>
+                                    <h:outputText id="output1" value="#{mfc.adj}" />
+                                </h:panelGroup>
+
+                                <h:inputHidden id="txt1" value="#{mfc.adj}" />
+
+                                <p:slider for="txt1" display="output1" style="width:200px" minValue="-5" maxValue="5" disabled="#{mfc.disabledFields}"  >
+                                    <p:ajax update="overallMark" />
+                                </p:slider>
+
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="General Comments"/>
+                        </td>
+                        <td align="left">
+                            <h:inputTextarea  cols="40" value="#{mfc.currentMark.generalComments}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Plagiarism"/>
+                        </td>
+                        <td align="left">
+                            <h:selectBooleanCheckbox value="#{mfc.currentMark.plagiarism}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Plagiarism comments"/>
+                        </td>
+                        <td align="left">
+                            <h:inputTextarea cols="40" value="#{mfc.currentMark.plagiarismComments}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Plagiarism Suspect"/>
+                        </td>
+                        <td align="left">
+                            <h:selectBooleanCheckbox value="#{mfc.currentMark.plagiarismSuspectBool}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Unfair Act Notes"/>
+                        </td>
+                        <td align="left">
+                            <h:inputTextarea cols="40" value="#{mfc.currentMark.unfairActNotes}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Comments for Examiners" rendered="#{mfc.currentUser.admin}"/>
+                        </td>
+                        <td align="left">
+                            <h:inputTextarea cols="40" value="#{mfc.currentMark.commentsForExaminers}" disabled="#{mfc.disabledFields}" rendered="#{mfc.currentUser.student}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="General Examboard Comments"/>
+                        </td>
+                        <td align="left">
+                            <h:inputTextarea  cols="40" value="#{mfc.currentMark.generalCommentsExamboard}" disabled="#{mfc.disabledFields}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Mark date"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{mfc.currentMark.markDate}" >
+                                <f:convertDateTime type="date" dateStyle="default" pattern="dd-MM-yyyy" timeZone="Europe/London"/>
+                            </h:outputText>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Marker"/>
+                        </td>
+                        <td align="left">
+
+                            <h:outputFormat value="#{mfc.userObject.forename}   #{mfc.userObject.surname }" escape="true"/>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Overall Mark" style="font-size: big; font-weight: bold;"/>
+                        </td>
+                        <td align="left">
+                            <h:outputFormat value="#{mfc.currentMark.mark}" style="font-size: big; font-weight: bold;" id="overallMark"/>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="Mark Status" style="font-size: big; font-weight: bold;"/>
+                        </td>
+                        <td align="left">
+                            <h:outputFormat value="#{mfc.currentMark.markStatus}" style="font-size: big; font-weight: bold;" />
+                        </td>
+
+                    </tr>
+                </table>
+                <p:commandButton value="Back" action="toProjectAllocatedDetails">
+                    <f:param name="project" value="#{fpc.current.idproject}"/>
+                </p:commandButton>
+                <p:spacer width="10"/>
+                <p:commandButton value="Save" action="toProjectAllocatedDetails" actionListener="#{mfc.saveMarks(e)}" rendered="#{!mfc.disabledFields}">
+                    <f:param name="project" value="#{fpc.current.idproject}"/>
+                </p:commandButton>
+                <p:spacer width="10"/>
+
+                <p:commandButton value="#{(mfc.currentMark.markStatus=='Need reconcile' || mfc.currentMark.markStatus=='Reconciled' ) ? 'Submit refined mark':'Submit the mark'}"
+                                 actionListener="#{mfc.calculateFinalMark(e)}" rendered="#{!mfc.disabledFields}" action="toProjectAllocatedDetails">
+                    <f:param name="project" value="#{fpc.current.idproject}"/>
+                </p:commandButton>
+                <p:spacer width="10"/>
+                <p:commandButton value="Submit this mark as a final" action="toProjectAllocatedDetails"
+                                 actionListener="#{mfc.submitFinalMark(e)}" rendered="#{!mfc.disabledFields}">
+                    <f:param name="project" value="#{fpc.current.idproject}"/>
+                </p:commandButton>
+                <p:spacer width="10"/>
+                <h:outputLabel value="Negotiation comments:" rendered="#{mfc.currentUser.staff}"/>
+                <h:inputTextarea cols="50" rows="3"  value="#{mfc.finalMarkComment}" disabled="#{mfc.disabledFields}" rendered="#{mfc.currentUser.staff}"/>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

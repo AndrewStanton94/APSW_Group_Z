@@ -1,0 +1,78 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui"
+              xmlns:h="http://java.sun.com/jsf/html"
+              xmlns:f="http://java.sun.com/jsf/core"
+              >
+
+    <h:form id="UserGeneralInfo" >
+        <fieldset><legend>User information</legend>
+
+            <h:panelGrid columns="3" columnClasses="columnWidth">
+
+                <h:outputLabel value="Forename:" for="forename"/>
+                <p:inputText id="forename" value="#{pac.current.forename}" validator="forenameValidator"
+                             disabled="#{!(userBean.admin || pac.myProfile)}" required="true" requiredMessage="You must specify a forename.">
+                    <f:ajax event="keyup" render="forenameError"/>
+                </p:inputText>
+                <h:message styleClass="error" id="forenameError" for="forename"/>
+
+                <h:outputLabel value="Surname:" for="surname"/>
+                <p:inputText id="surname" value="#{pac.current.surname}" validator="surnameValidator"
+                             disabled="#{!(userBean.admin || pac.myProfile)}" required="true" requiredMessage="You must specify a surname.">
+                    <f:ajax event="keyup" render="surnameError"/>
+                </p:inputText>
+                <h:message styleClass="error" id="surnameError" for="surname"/>
+
+                <p:outputLabel value="Email:" />
+                <p:inputText value="#{pac.current.email}" disabled="true"/>
+                <br />
+            </h:panelGrid>
+
+            <!-- For regular users, displays the status-->
+            <h:panelGrid columns="2" >
+                <p:outputLabel value="Roles (user):"/>
+                <p:inputText value="#{pac.current.roleNames}" disabled="true" />
+
+            </h:panelGrid>
+
+
+
+            <h:panelGrid columns="3" columnClasses="columnWidth">
+                <p:outputLabel value="Account Status:"/>
+                <p:inputText value="#{pac.current.accountStatus}" disabled="true"/>
+                <br />
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" columnClasses="columnWidth" rendered="#{userBean.staff}">
+                <p:outputLabel value="Staff status:" />
+                <p:selectOneMenu value="#{pac.activeStaff}">
+                    <f:selectItem itemLabel="Active" itemValue="1" />
+                    <f:selectItem itemLabel="Inactive" itemValue="0" />
+                </p:selectOneMenu>
+            </h:panelGrid>
+
+            <h:panelGrid columns="3" rendered="#{pac.currentIsStudent()}" columnClasses="columnWidth">
+                <p:outputLabel value="Student number:"/>
+                <p:inputText value="#{pac.current.hemis}" disabled="true"/>
+                <br />
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" columnClasses="columnWidth" rendered="#{userBean.admin || pac.myProfile}">
+                <p:outputLabel value="Contact points: (e.g. phone, Website (URL  with http://) ..)" for="contact"/>
+                <p:inputTextarea id="contact" cols="40" rows="5"  value="#{pac.current.contactpoints}" />
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" columnClasses="columnWidth" rendered="#{!(userBean.admin || pac.myProfile)}">
+                <p:outputLabel value="Contact points:"/>
+                <p:outputLabel value="#{pac.contactPointsToHTML()}" escape="false"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Update" action="#{pac.saveUserInfo}"
+                             rendered="#{(userBean.admin || pac.myProfile)}">
+                <f:param name="username" value="#{pac.current.username}" />
+            </p:commandButton>
+            <p:messages for="UserGeneralInfo" autoUpdate="true" closable="true" />
+        </fieldset>
+    </h:form>
+</ui:component>

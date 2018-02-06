@@ -1,0 +1,85 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="top">
+        <p><h2>Final Project Management</h2></p>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:panel header="Submit Final Project"   >
+            <h:form id="SubmitProject" enctype="multipart/form-data">
+                
+                <h3>Project</h3>
+                <h:panelGrid columns="2" styleClass="infoPanel">
+                    <h:outputLabel value="Title :" for="ProjectTitle"/>
+                    <h:outputText id="ProjectTitle" value="#{sfpc.project.projecttitle}"/>
+                </h:panelGrid>
+
+                <h3>Submission requirements</h3>
+                <h:panelGrid columns="2" styleClass="infoPanel">
+                    
+                    <h:outputLabel value="Description :"  for="SubmitConfDescription"/>
+                    <h:outputText id="SubmitConfDescription"  value="#{sfpc.config.descriptionSubmitConfig}"/>
+                    
+                    <h:outputLabel value="Authorised file type(s) :" for="SubmitConfFiletype" />
+                    <h:outputText id="SubmitConfFiletype" value= "#{sfpc.config.fileType}" />
+                    
+                    <h:outputLabel value="Maximum size :" for="SubmitConfFilesize" />
+                    <h:outputText id="SubmitConfFilesize" value= "#{sfpc.config.fileSize} kB" />
+                    
+                    <h:outputLabel value="Deadline :" for="SubmitConfDeadline" />
+                    <h:panelGroup>
+                        <h:outputText id="SubmitConfDeadline" value="#{sfpc.config.normalDeadline}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=" (opened since "/>
+                        <h:outputText value="#{sfpc.config.openingDate}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Europe/London"/>
+                        </h:outputText>
+                        <h:outputText value=")"/>
+                    </h:panelGroup>
+                    
+                </h:panelGrid>
+                
+                <h:panelGroup id="SubmitProject" rendered="#{sfpc.file == null}">
+                    <h3>Submit</h3>
+                    <h:outputLabel value="Add file (you can use Drag and Drop) :" for="FileUpload"/>
+                    <p:fileUpload id="FileUpload"
+                                  fileUploadListener="#{sfpc.handleFileUpload}"  
+                                  mode="advanced"
+                                  auto="true"
+                                  sizeLimit="#{sfpc.config.fileSize*1000}"   
+                                  allowTypes="#{sfpc.regExConfigFileType}"
+                                  update="messages SubmitProject UploadedFileInfo"/>
+
+                    <p:growl id="messages" showDetail="true"/>
+                </h:panelGroup>
+                    
+                <h:panelGroup rendered="#{sfpc.file != null}" id="UploadedFileInfo">
+                    <h3>Uploaded File</h3>
+                    <h:panelGrid columns="2" styleClass="infoPanel">
+                        <h:outputLabel value="name :" for="uploadedFileName"/>
+                        <h:outputText id="uploadedFileName" value="#{sfpc.file.fileName}" />
+                        <h:outputLabel value="size :" for="uploadedFileSize"/>
+                        <h:outputText id="uploadedFileSize" value="#{sfpc.file.size/1000} kB"/>
+                        <h:outputLabel value="extension :" for="uploadedFileExt"/>
+                        <h:outputText id="uploadedFileExt" value="#{sfpc.fileExtension}"/>
+                        <h:outputLabel value="type :" for="uploadedFileType"/>
+                        <h:outputText id="uploadedFileType" value="#{sfpc.file.contentType}"/>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Submit" action="#{sfpc.doSubmission}" />
+                    <p:commandButton value="Change file" icon="ui-icon-arrowrefresh-1-s" update="SubmitProject UploadedFileInfo">
+                        <f:setPropertyActionListener value="#{null}" target="#{sfpc.file}"/>
+                    </p:commandButton>
+
+                </h:panelGroup>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

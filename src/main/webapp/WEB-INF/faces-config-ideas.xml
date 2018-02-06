@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <navigation-rule>
+        <from-view-id>/view/ideas/allideas.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toDetails</from-outcome>
+            <to-view-id>/view/ideas/ideadetails.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>allIdeaListRefresh</from-outcome>
+            <to-view-id>/view/ideas/allideas.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>allIdeasToEdit</from-outcome>
+            <to-view-id>/view/ideas/ideaedit.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/ideas/ideadetails.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>backListAll</from-outcome>
+            <to-view-id>/view/ideas/allideas.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toEditfromDetails</from-outcome>
+            <to-view-id>/view/ideas/ideaedit.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toHistoryDetails</from-outcome>
+            <to-view-id>/view/ideas/ideahystorydetails.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/ideas/ideaedit.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>backDetails</from-outcome>
+            <to-view-id>/view/ideas/ideadetails.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/view/ideas/ideahystorydetails.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toIdeaDetails</from-outcome>
+            <to-view-id>/view/ideas/ideadetails.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>

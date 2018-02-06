@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        
+        <navigation-case>
+            <from-outcome>toIndex</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+		
+        <navigation-case>
+            <from-outcome>toLogin</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+	
+        <!-- Allocation -->	
+        <navigation-case>
+            <from-outcome>toAllocation</from-outcome>
+            <to-view-id>/view/allocation/allocation.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toProjects</from-outcome>
+            <to-view-id>/view/allocation/projects.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>      
+                
+        <navigation-case>
+            <from-outcome>toProjectList</from-outcome>
+            <to-view-id>/view/allocation/menuProjectList.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Examiner -->       
+        <navigation-case>
+            <from-outcome>toReviewMarking</from-outcome>
+            <to-view-id>/view/externalexaminer/examinerview.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Feedback -->        
+        <navigation-case>
+            <from-outcome>toFeedback</from-outcome>
+            <to-view-id>/view/feedback/allfeedback.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <!-- Ideas -->
+        <navigation-case>
+            <from-outcome>toIdea</from-outcome>
+            <to-view-id>/view/ideas/idea.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>toAllIdeas</from-outcome>
+            <to-view-id>/view/ideas/allideas.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toApprovedIdeas</from-outcome>
+            <to-view-id>/view/ideas/approvedStaffIdeaByStaff.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Import / Export -->
+        <navigation-case>
+            <from-outcome>toExportPage</from-outcome>
+            <to-view-id>/view/importexport/indexExport.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toImportPage</from-outcome>
+            <to-view-id>/view/importexport/indexImport.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Management -->        
+        <navigation-case>
+            <from-outcome>toYourCohortPage</from-outcome>
+            <to-view-id>/view/management/cohortManagement.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toOldUnitPage</from-outcome>
+            <to-view-id>/view/management/oldUnitPage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toOldUnitinstancePage</from-outcome>
+            <to-view-id>/view/management/oldUnitinstancePage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>toCoursePage</from-outcome>
+            <to-view-id>/view/management/coursePage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>toCourseinstancePage</from-outcome>
+            <to-view-id>/view/management/courseinstancePage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>toCohortPage</from-outcome>
+            <to-view-id>/view/management/cohortPage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>toNewYear</from-outcome>
+            <to-view-id>/view/management/newyearPage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toUnit</from-outcome>
+            <to-view-id>/view/management/unitPage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>toUnitInstance</from-outcome>
+            <to-view-id>/view/management/unitInstancePage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Register -->       
+        <navigation-case>
+            <from-outcome>toRegister</from-outcome>
+            <to-view-id>/view/register/register.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toAdminPage</from-outcome>
+            <to-view-id>/view/register/admin.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toAccount</from-outcome>
+            <to-view-id>/view/register/user_info.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toUserInfo</from-outcome>
+            <to-view-id>/view/register/user_info.xhtml</to-view-id>
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toLostPass</from-outcome>
+            <to-view-id>/view/register/lostPass.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <!-- Submit -->
+        <navigation-case>
+            <from-outcome>toSubmitProject</from-outcome>
+            <to-view-id>/view/submit/SubmitProject.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>toSubmissionConfiguration</from-outcome>
+            <to-view-id>/view/submit/SubmitConfigurationPage.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        
+    </navigation-rule>
+
+
+</faces-config>

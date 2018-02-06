@@ -1,0 +1,77 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="#{uc.current.unittitle}">
+            <h:form id="unitDetailsForm" prependId="false">
+                
+                <h3>Details</h3>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Title:" for="title"/>
+                    <h:outputText id="title" value="#{uc.current.unittitle}"/>
+
+                    <h:outputLabel value="Code:" for="code"/>
+                    <h:outputText id="code" value="#{uc.current.unitcode}"/>
+
+                    <h:outputLabel value="Kind:" for="kind"/>
+                    <h:outputText id="kind" value="#{uc.current.unitkind.kindname}"/>
+
+                    <h:outputLabel value="Level:" for="level"/>
+                    <h:outputText id="level" value="#{uc.current.courseLevel.name}"/>                  
+                </h:panelGrid>
+                <p:button value="Back to units" icon="ui-icon-arrowreturnthick-1-w" outcome="toUnit"/>
+                <p:button value="Edit" icon="ui-icon-pencil" outcome="toUnitEdit"/>
+                
+                <h3>Instances (#{uc.current.unitinstanceList.size()})</h3>
+                <p:dataTable value="#{uc.current.unitinstanceList}" var="unitInstance" paginator="true" rows="20" paginatorPosition="bottom"
+                             selectionMode="single" selection="#{uc.currentUnitInstance}" rowKey="#{unitInstance.idunitinstance}">
+
+                    <p:ajax event="rowSelect" update="editUnitInstanceButton detailsUnitInstanceButton"/>
+
+                    <p:column sortBy="#{unitinstance.idunitinstance}">
+                        <f:facet name="header">
+                            <h:outputText value="N°"/>
+                        </f:facet>
+                        <p:commandLink value="#{unitInstance.idunitinstance}" action="toUnitInstanceDetails" ajax="false">
+                            <f:setPropertyActionListener value="#{unitInstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column sortBy="#{unitInstance.academicyear.startdate}">
+                        <f:facet name="header">
+                            <h:outputText value="Academic Year" />
+                        </f:facet>
+                        <h:outputText value="#{unitInstance.academicyear.academicYearName}" />
+                    </p:column>
+
+                    <p:column sortBy="#{unitInstance.unitpersoninList.size()}">
+                        <f:facet name="header">
+                            <h:outputText value="Students" />
+                        </f:facet>
+                        <h:outputText value="#{unitInstance.unitpersoninList.size()}"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="detailsUnitInstanceButton" value="Details" icon="ui-icon-search" action="toUnitInstanceDetails" disabled="#{(uc.currentUnitInstance == null)}" ajax="false">
+                            <f:setPropertyActionListener value="#{uc.currentUnitInstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton id="editUnitInstanceButton" value="Edit" icon="ui-icon-pencil" action="toUnitInstanceEdit" disabled="#{(uc.currentUnitInstance == null)}" ajax="false">
+                            <f:setPropertyActionListener value="#{uc.currentUnitInstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton value="New" icon="ui-icon-plus" action="toUnitInstanceEdit"  ajax="false">
+                            <f:setPropertyActionListener value="#{null}" target="#{userBean.tempUnitInstance}"/>       
+                        </p:commandButton>
+                    </f:facet>
+
+                </p:dataTable>  
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

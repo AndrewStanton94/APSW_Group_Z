@@ -1,0 +1,87 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Groups management</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel header="Unit instance">
+            <h:form prependId="false" id="UnitInstanceDetailsForm">
+                
+                <h3>General details</h3>
+                <h:panelGrid columns="2" rendered="#{!uiec.creationMode}">
+
+                    <h:outputLabel value="N° :" for="idEdition"/>
+                    <h:outputText id="idEdition" value="#{uiec.current.idunitinstance}"/>
+
+                    <h:outputLabel value="Academic Year :" for="academicYearEdition"/>
+                    <h:outputText id="academicYearEdition" value="#{uiec.current.academicyear.academicYearName}" />
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="3" rendered="#{uiec.creationMode}">
+
+                    <h:outputLabel value="Academic Year :" for="academicYearCreation"/>
+                    <h:selectOneMenu id="academicYearCreation" value="#{uiec.current.academicyear}" required="true" requiredMessage="You must specify an academic year.">
+                        <f:selectItems value="#{ayc.items}" var="ay" itemValue="#{ay.idacademicyear}" itemLabel="#{ay.academicYearName}" />
+                    </h:selectOneMenu>
+                    <h:message class="error" for="academicYearCreation"/>
+
+                </h:panelGrid>
+                
+                <h3>Unit</h3>
+                <p:dataTable  id="unitSelect" value="#{uc.items}" var="unit" paginator="true" paginatorPosition="bottom"
+                             selectionMode="single" rows="30" selection="#{uiec.current.unit}" rowKey="#{unit.unitcode}">
+
+                    <p:ajax event="rowSelect" update="saveEditButton saveAddButton"/>
+
+                    <p:column sortBy="#{unit.unitcode}">
+                        <f:facet name="header">
+                            <h:outputText value="Code"/>
+                        </f:facet>
+                        <h:outputText value="#{unit.unitcode}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{unit.unittitle}">
+                        <f:facet name="header">
+                            <h:outputText value="Title" />
+                        </f:facet>
+                        <h:outputText value="#{unit.unittitle}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{unit.unitkind.kindname}">
+                        <f:facet name="header">
+                            <h:outputText value="Kind" />
+                        </f:facet>
+                        <h:outputText value="#{unit.unitkind.kindname}"/>
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Cancel" icon="ui-icon-cancel" action="toUnitInstanceDetails" ajax="false"  immediate="true" rendered="#{!uiec.creationMode}">
+                            <f:setPropertyActionListener value="#{uiec.originalUnitInstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton value="Cancel" icon="ui-icon-cancel" action="toUnitInstance" ajax="false"  immediate="true" rendered="#{uiec.creationMode}">
+                            <f:setPropertyActionListener value="#{null}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Reset" icon="ui-icon-arrowrefresh-1-s" actionListener="#{uiec.init()}" update="unitSelect" rendered="#{!uec.creationMode}" >
+                            <f:setPropertyActionListener value="#{uiec.originalUnitInstance}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Save" id="saveEditButton" icon="ui-icon-disk" action="#{uiec.edit()}" rendered="#{!uiec.creationMode}" disabled="#{(uiec.current.unit == null)}">
+                            <f:setPropertyActionListener value="#{uiec.current}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>
+                        <p:commandButton value="Save" id="saveAddButton" icon="ui-icon-disk" action="#{uiec.add()}" rendered="#{uiec.creationMode}" disabled="#{(uiec.current.unit == null)}">
+                            <f:setPropertyActionListener value="#{uiec.current}" target="#{userBean.tempUnitInstance}"/>
+                        </p:commandButton>                      
+                    </f:facet>
+                    
+                </p:dataTable>
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>

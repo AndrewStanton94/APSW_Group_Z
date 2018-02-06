@@ -1,0 +1,91 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">
+
+        <p:panel header="Administration Panel">
+
+            <p:panel id="ReasonSuspension" rendered="#{userBean.tempPerson != null}">
+                <h:form>
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value="What is the reason for the suspension of #{userBean.tempPerson.forename} #{userBean.tempPerson.surname} (#{userBean.tempPerson.username}) ?" />
+                        <h:inputText value="#{suspensionController.newItem.reason}" title="Reason" />
+                        <p:commandButton value="Send the suspension" action="#{suspensionController.add()}"/>
+                    </h:panelGrid>
+                </h:form>
+            </p:panel>
+            <br/>
+
+            <h:form id="RegisteredUsers" prependId="false">
+
+                <p:commandButton value="Add user" update="RegisteredUsers" action ="#{adminController.setDisplayadd}" />
+                    <h:panelGrid columns="2" rendered="#{adminController.displayadd}">
+                        <h:outputLabel value="Username:" />
+                        <h:inputText value="#{adminController.newItem.username}" title="Username"/>
+                        <h:outputLabel value="Forename:" />
+                        <h:inputText value="#{adminController.newItem.forename}" title="Forename"/>
+                        <h:outputLabel value="Surname:"/>
+                        <h:inputText value="#{adminController.newItem.surname}" title="Surname"/>
+                        <h:outputLabel value="Password:"/>
+                        <h:inputText value="#{adminController.newItem.password}" title="Password" />
+                        <h:outputLabel value="Email:" />
+                        <h:inputText value="#{adminController.newItem.email}" title="Email"/>
+                        <h:outputLabel value="PersonStatus:" for="personStatus" />
+                        <h:selectManyMenu id="roles" value="#{adminController.newItem.roles}" title="Roles" >
+                            <f:selectItems value="#{roleNameController.itemsAvailableSelectMany}" var="s" itemLabel="#{s.id}"/>
+                        </h:selectManyMenu>
+                        <h:outputLabel value="Contactpoints:" for="contactpoints" />
+                        <h:inputText id="contactpoints" value="#{adminController.newItem.contactpoints}" title="Contactpoints" />
+                        <p:commandButton value="OK" update="RegisteredUsers" action="#{adminController.addUser}"/>
+                    </h:panelGrid>
+
+                <p:dialog header="Selection" widgetVar="multiDialog" width="250" height="300">
+                    <p:dataList id="displayMulti" value="#{adminController.selectedPersons}" var="selectedP">
+                        Username: #{selectedP.username}
+                    </p:dataList>
+                </p:dialog>
+                <br/><br/>
+
+                <p:dataTable var="person" value="#{adminController.persons}" style="text-align: center;"
+                             paginator="true" rows="50" >
+                    <f:facet name="header">Registered Users</f:facet>
+
+                    <p:column headerText="Name" filterMatchMode="contains" filterBy="#{person.forename} #{person.surname} #{person.username}">
+                        <h:commandLink value="#{person.forename} #{person.surname} (#{person.username})" action="toUserInfo">
+                            <f:setPropertyActionListener value="#{person}" target="#{pac.current}"/>
+                        </h:commandLink>
+                    </p:column>
+
+                    <p:column headerText="Status" filterBy="#{person.roleNames}"
+                              filterOptions="#{roleNameController.itemsAvailableSelectOne}" filterMatchMode="exact">
+                        <h:outputText value="#{person.roleNames}"/>
+                    </p:column>
+
+                    <p:column headerText="Email" filterMatchMode="contains" filterBy="#{person.email}">
+                        <h:outputText value="#{person.email}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <p:commandButton value="Activate" action="#{adminController.activate(person)}"
+                                         rendered="#{person.activationdate == null}"/>
+                        <p:commandButton value="Confirm" action="#{adminController.confirm(person)}"
+                                         rendered="#{person.staff and person.confirmationdate == null}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">Suspension</f:facet>
+                        <p:commandButton value="Suspend" action="toAdminPage" rendered="#{!adminController.isSuspended(person)}">
+                            <f:setPropertyActionListener value="#{person}" target="#{userBean.tempPerson}"/>
+                        </p:commandButton>
+                        <p:commandButton value="Unsuspend" action="#{adminController.unsuspend(person)}"
+                                         rendered="#{adminController.isSuspended(person)}" style="color: red"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
