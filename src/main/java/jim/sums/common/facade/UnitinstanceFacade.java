@@ -35,7 +35,7 @@ public class UnitinstanceFacade extends AbstractFacade<UnitInstance>{
 		super(UnitInstance.class);
 	}
 
-   
+
 
 	public Cohort getCohort(UnitInstance ui) {
 		Date today = new Date();
@@ -48,16 +48,18 @@ public class UnitinstanceFacade extends AbstractFacade<UnitInstance>{
 	}
 
         //TODO -> it seems useless... In most of the cases (all ?), we can use unit.getUnitinstanceList()
+        @Deprecated
         public List<UnitInstance> findUnitInstancesByUnit(Unit u) {
-            Query query = em.createNamedQuery("UnitInstance.findByUnit");
-            query.setParameter("unit",u);
-            return query.getResultList();	
+            return u.getUnitinstanceList();
+//            Query query = em.createNamedQuery("UnitInstance.findByUnit");
+//            query.setParameter("unit",u);
+//            return query.getResultList();
 	}
-       
+
         /**
          * This is a method that gets
          * an instance based on the unitCode and academicYear
-         * @param unit  This is the Unit 
+         * @param unit  This is the Unit
          * @param ac This is the AcademicYear
          * @return It returns an instance of UnitInstance
          */

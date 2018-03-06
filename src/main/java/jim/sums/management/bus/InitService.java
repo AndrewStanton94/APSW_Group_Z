@@ -9,9 +9,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import jim.sums.common.bus.BusinessException;
 import jim.sums.common.db.*;
 import jim.sums.common.facade.*;
 
@@ -92,7 +95,7 @@ public class InitService {
     @EJB
     StaffprojectrelationshipFacade sprf;
 
-    public String initdb() {
+    public String initdb() throws BusinessException {
         cohortf.deleteForCohort();
         pf.deleteForPerson();
         mf.deleteForMark();
@@ -106,11 +109,14 @@ public class InitService {
         apf.Initialise();
         isf.Initialise();
 
+        //Force a commit for this data
+        isf.flush();
+
         makeTestData();
         return "toLogin";
     }
 
-    public String makeTestData() {
+    public String makeTestData() throws BusinessException {
         Random random = new Random();
 
         RoleName adminRole = rnf.admin();
@@ -242,23 +248,22 @@ public class InitService {
 
         Date startingDate = new GregorianCalendar(2012, 8, 1).getTime();
         Date endingDate = new GregorianCalendar(2013, 7, 31).getTime();
-
-        List<Date> startingDateList = new ArrayList<Date>();
-        startingDateList.add(new GregorianCalendar(2012, 8, 1).getTime());
-        startingDateList.add(new GregorianCalendar(2013, 8, 1).getTime());
-        List<Date> endingDateList = new ArrayList<Date>();
-        endingDateList.add(new GregorianCalendar(2013, 7, 31).getTime());
-        endingDateList.add(new GregorianCalendar(2014, 7, 31).getTime());
-        List<String> academicYearNameList = new ArrayList<String>();
-        academicYearNameList.add("2012-2013");
-        academicYearNameList.add("2013-2014");
+//
+//        List<Date> startingDateList = new ArrayList<Date>();
+//        startingDateList.add(new GregorianCalendar(2012, 8, 1).getTime());
+//        startingDateList.add(new GregorianCalendar(2013, 8, 1).getTime());
+//        List<Date> endingDateList = new ArrayList<Date>();
+//        endingDateList.add(new GregorianCalendar(2013, 7, 31).getTime());
+//        endingDateList.add(new GregorianCalendar(2014, 7, 31).getTime());
+//        List<String> academicYearNameList = new ArrayList<String>();
+//        academicYearNameList.add("2012-2013");
+//        academicYearNameList.add("2013-2014");
 
         if (ayf.count() != 2) {
             ayf.deleteForAcademicYear();
             Academicyear academicYear;
-            for (i = 0; i < 2; i++) {
-                academicYear = new Academicyear(startingDateList.get(i), endingDateList.get(i));
-                academicYear.setAcademicYearName(academicYearNameList.get(i));
+            for (i = 2013; i < 2020; i++) {
+                academicYear = new Academicyear(i + "-" + (i+1), i);
                 ayf.create(academicYear);
             }
         }
@@ -308,17 +313,25 @@ public class InitService {
 
         // Initialization of Cohort                 by BernardiD
         List<UnitInstance> unitWithPFirstYear = new ArrayList<UnitInstance>();
-        unitWithPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS60P")).get(0));
-        unitWithPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE60P")).get(0));
         List<UnitInstance> unitWithPSecondYear = new ArrayList<UnitInstance>();
-        unitWithPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS60P")).get(1));
-        unitWithPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE60P")).get(1));
         List<UnitInstance> unitWithoutPFirstYear = new ArrayList<UnitInstance>();
-        unitWithoutPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS40")).get(0));
-        unitWithoutPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE40")).get(0));
         List<UnitInstance> unitWithoutPSecondYear = new ArrayList<UnitInstance>();
-        unitWithoutPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS40")).get(1));
-        unitWithoutPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE40")).get(1));
+        try {
+            unitWithPFirstYear.add(uf.findByUnitCode("PJS60P").getCurrentInstance());
+            unitWithPFirstYear.add(uf.findByUnitCode("PJE60P").getCurrentInstance());
+
+            unitWithPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS60P")).get(1));
+            unitWithPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE60P")).get(1));
+
+            unitWithoutPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS40")).get(0));
+            unitWithoutPFirstYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE40")).get(0));
+
+            unitWithoutPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJS40")).get(1));
+            unitWithoutPSecondYear.add(uif.findUnitInstancesByUnit(uf.findByUnitCode("PJE40")).get(1));
+        } catch (BusinessException ex) {
+            Logger.getLogger(InitService.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+        }
 
         Cohort cohort;
         if (cohortf.count() < 4) {
@@ -778,7 +791,7 @@ public class InitService {
             }
         }
 
-        // Initialisation of Staffprojectrelationship by Corentin S.        
+        // Initialisation of Staffprojectrelationship by Corentin S.
         Staffprojectrelationship spr = new Staffprojectrelationship(1L, ssf.findByName("supervisor"), staffPerson, finalProjectList.get(0));
         sprf.create(spr);
         spr = new Staffprojectrelationship(2L, ssf.findByName("supervisor"), staffPerson3, finalProjectList.get(1));

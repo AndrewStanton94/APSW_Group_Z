@@ -11,7 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -19,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import jim.sums.common.bus.BusinessException;
+import jim.sums.common.facade.AcademicyearFacade;
 
 /**
  *
@@ -162,4 +163,17 @@ public class Unit implements Serializable {
 //    public void setUnitkindIdkind(ProjectKind unitkindIdkind) {
 //        this.unitkindIdkind = unitkindIdkind;
 //    }
+
+    public UnitInstance getCurrentInstance() throws BusinessException {
+        return getInstance(AcademicyearFacade.getStaticCurrentYear());
+    }
+
+    public UnitInstance getInstance(Academicyear ay) throws BusinessException {
+        for (UnitInstance ui : this.getUnitinstanceList()) {
+            if (ui.getAcademicyear().equals(ay)) {
+                return ui;
+            }
+        }
+        throw new BusinessException("No instance found of unit " + this.getUnitcode() + " for AY " + ay.getAcademicYearName());
+    }
 }

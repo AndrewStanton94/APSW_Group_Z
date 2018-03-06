@@ -84,6 +84,12 @@ public class Academicyear implements Serializable {
         this.enddate = enddate;
     }
 
+    public Academicyear(String name, int startYear) {
+        this.academicYearName = name;
+        this.startdate = new GregorianCalendar(startYear, Calendar.AUGUST, 1, 0, 0, 0).getTime();
+        this.enddate = new GregorianCalendar(startYear+1, Calendar.JULY, 31, 23, 59, 59).getTime();
+    }
+
     public Integer getIdacademicyear() {
         return idacademicyear;
     }
@@ -91,11 +97,11 @@ public class Academicyear implements Serializable {
     public void setIdacademicyear(Integer idacademicyear) {
         this.idacademicyear = idacademicyear;
     }
-    
+
     public String getAcademicYearName() {
         return academicYearName;
     }
-    
+
     public void setAcademicYearName(String academicYearName) {
         this.academicYearName = academicYearName;
     }

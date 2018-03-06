@@ -568,6 +568,7 @@ public class Person implements Serializable {
     public void addRole(RoleName role) {
         if (!getRoles().contains(role)) {
             this.getRoles().add(role);
+            role.getPersonsHavingRole().add(this);
         }
     }
 
