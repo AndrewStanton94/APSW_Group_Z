@@ -56,8 +56,8 @@ import jim.sums.register.util.PasswordUtil;
     @NamedQuery(name = "Person.findByConfirmkey", query = "SELECT m FROM Person m WHERE m.confirmkey = :confirmkey")})
 public class Person implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "CREATIONDATE")
     @Temporal(TemporalType.DATE)
     private Date creationdate;
@@ -67,8 +67,8 @@ public class Person implements Serializable {
     // @Column(name = "CONFIRMATIONDATE")
     @Temporal(TemporalType.DATE)
     private Date confirmationdate;
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "LASTLOGIN")
     @Temporal(TemporalType.DATE)
     private Date lastlogin;
@@ -111,53 +111,48 @@ public class Person implements Serializable {
     @Size(max = 32)
     // @Column(name = "CONFIRMKEY")
     private String confirmkey;
-    @ManyToMany(mappedBy = "personList")
+    @ManyToMany(cascade = CascadeType.PERSIST, mappedBy = "personList")
     private List<Cohort> cohortList; //ManagedBy
-    @ManyToMany(mappedBy = "personList1")
+    @ManyToMany(cascade = CascadeType.PERSIST, mappedBy = "personList1")
     private List<Cohort> cohortList1; //SupervisorIn
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private List<Personchosenby> personchosenbyList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person1")
-    private List<Personchosenby> personchosenbyList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+//    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
+//    private List<Personchosenby> personchosenbyList;
+//    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person1")
+//    private List<Personchosenby> personchosenbyList1;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<Staffprojectrelationship> staffprojectrelationshipList;
-    // @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    // @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     // private List<Grouptable> grouptableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chosen")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "chosen")
     private List<Unitpersonin> unitpersoninList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owneridea")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "owneridea")
     private List<Projectidea> projectideaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<Ideachosenby> ideachosenbyList;
-    @ManyToMany
-    // @JoinTable(name = "GROUPTABLE",
-    // joinColumns =
-    // @JoinColumn(name = "USERNAME"),
-    // inverseJoinColumns =
-    // @JoinColumn(name = "ROLENAME"))
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<RoleName> roles = new ArrayList<RoleName>();
     // @JoinColumn(name = "ORGANISATION", referencedColumnName = "IDORGANISATION")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Organisation organisation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "suspendedperson")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "suspendedperson")
     private List<Suspension> suspensionList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "instigaterperson")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "instigaterperson")
     private List<Suspension> suspensionList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<Projectideahistory> projectideahistoryList;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Finalproject> finalprojectList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<Personstaffstatus> personstaffstatusList;
     @Transient
     String accountStatus;
-    @OneToMany(mappedBy = "person")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<ContactDetail> contactDetails;
-    @OneToMany(mappedBy = "student")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "student")
     private List<MilestoneInstance> milestoneInstances;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
     private List<Submission> submissionList;
-    @OneToMany(mappedBy = "marker")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "marker")
     private List<MarkerMark> marks;
 
     public Person() {
@@ -283,21 +278,21 @@ public class Person implements Serializable {
         this.cohortList1 = cohortList1;
     }
 
-    public List<Personchosenby> getPersonchosenbyList() {
-        return personchosenbyList;
-    }
-
-    public void setPersonchosenbyList(List<Personchosenby> personchosenbyList) {
-        this.personchosenbyList = personchosenbyList;
-    }
-
-    public List<Personchosenby> getPersonchosenbyList1() {
-        return personchosenbyList1;
-    }
-
-    public void setPersonchosenbyList1(List<Personchosenby> personchosenbyList1) {
-        this.personchosenbyList1 = personchosenbyList1;
-    }
+//    public List<Personchosenby> getPersonchosenbyList() {
+//        return personchosenbyList;
+//    }
+//
+//    public void setPersonchosenbyList(List<Personchosenby> personchosenbyList) {
+//        this.personchosenbyList = personchosenbyList;
+//    }
+//
+//    public List<Personchosenby> getPersonchosenbyList1() {
+//        return personchosenbyList1;
+//    }
+//
+//    public void setPersonchosenbyList1(List<Personchosenby> personchosenbyList1) {
+//        this.personchosenbyList1 = personchosenbyList1;
+//    }
 
     public List<Staffprojectrelationship> getStaffprojectrelationshipList() {
         return staffprojectrelationshipList;

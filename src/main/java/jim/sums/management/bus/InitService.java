@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -221,7 +222,7 @@ public class InitService {
             staffPerson2.setConfirmationdate(new Date());
             staffPerson2.setConfirmationdate(new Date());
 
-            pf.deleteForPerson();
+//            pf.deleteForPerson();
 
             pf.create(adminPerson);
             pf.create(studentPerson);
@@ -317,6 +318,7 @@ public class InitService {
         List<UnitInstance> unitWithoutPFirstYear = new ArrayList<UnitInstance>();
         List<UnitInstance> unitWithoutPSecondYear = new ArrayList<UnitInstance>();
         try {
+            Academicyear ay = ayf.getCurrentYear();
             unitWithPFirstYear.add(uf.findByUnitCode("PJS60P").getCurrentInstance());
             unitWithPFirstYear.add(uf.findByUnitCode("PJE60P").getCurrentInstance());
 
@@ -596,7 +598,11 @@ public class InitService {
         // Initialization of ProjectIdea
         List<Projectidea> lpi = new ArrayList<Projectidea>();
         List<String> title = new ArrayList<String>();
-        List<Person> per = pf.findByRole(staffRole);
+        Set<Person> per = staffRole.getPersonsHavingRole();
+        List<Person> staffRolePeople = new ArrayList<>(per);
+        if (staffRolePeople.size() < 1) {
+            throw new BusinessException("No persons with role 'staff'");
+        }
         title.add("haha");
         title.add("hoho");
         title.add("qsd");
@@ -617,7 +623,7 @@ public class InitService {
                 pi1.setIdeastatus(isf.findAll().get(1));
                 pi1.setGradeList(cl.findAll());
                 pi1.setKindList(pk.findAll());
-                pi1.setOwneridea(per.get(i % pf.findByRole(staffRole).size()));
+                pi1.setOwneridea(staffRolePeople.get(0)); //TODO: Iterate through this list or pick person at random from it
                 pi1.setAcademicquestion(academicQuestionList.get(i % academicQuestionList.size()));
                 lpi.add(pi1);
                 pi.create(pi1);

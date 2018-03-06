@@ -48,7 +48,7 @@ public class CategoryMarksOption implements Serializable {
     @JoinColumn(name = "CAT_ID", referencedColumnName = "CATID")
     @ManyToOne(optional = false)
     private MarkCategory catId;
-    @JoinColumn(name = "MARK_ID", referencedColumnName = "MARK_ID")
+//    @JoinColumn(name = "MARK_ID", referencedColumnName = "MARK_ID")
     @ManyToOne(optional = false)
     private MarkerMark markId;
     @JoinColumn(name = "OPTION_ID", referencedColumnName = "OPT_ID")
@@ -63,7 +63,7 @@ public class CategoryMarksOption implements Serializable {
     public CategoryMarksOption(Integer catMarkOptionId) {
         this.catMarkOptionId = catMarkOptionId;
     }
-    
+
     public CategoryMarksOption(String selected) {
         this.selected = selected;
     }
@@ -103,7 +103,7 @@ public class CategoryMarksOption implements Serializable {
     }
 
     public void calculateCategoryMark() {
-     
+
             List<CategoryMark> current = getMarkId().getCategoryMarksList();
             List<CategoryMarksOption> currentMO = getMarkId().getCategoryMarksOptionList();
             int selectedOption = 0;
