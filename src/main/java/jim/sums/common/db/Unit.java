@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import jim.sums.common.bus.BusinessException;
 import jim.sums.common.facade.AcademicyearFacade;
+import jim.sums.common.util.AcademicYearUtil;
 
 /**
  *
@@ -29,7 +30,7 @@ import jim.sums.common.facade.AcademicyearFacade;
 @Table(name = "UNIT")
 @NamedQueries({
     @NamedQuery(name = "Unit.findAll", query = "SELECT u FROM Unit u"),
-    @NamedQuery(name = "Unit.findByUnitcode", query = "SELECT u FROM Unit u WHERE u.unitcode = :unitcode"),
+    @NamedQuery(name = "Unit.findByUnitcode", query = "SELECT u FROM Unit u WHERE upper(u.unitcode) = UPPER(:unitcode)"),
     @NamedQuery(name = "Unit.findByUnittitle", query = "SELECT u FROM Unit u WHERE u.unittitle = :unittitle"),
     @NamedQuery(name = "Unit.findByUnitcoursel", query = "SELECT u FROM Unit u, CourseLevel cl WHERE cl.id = :unitcl AND u.courseLevel = cl")})
 public class Unit implements Serializable {
@@ -165,7 +166,7 @@ public class Unit implements Serializable {
 //    }
 
     public UnitInstance getCurrentInstance() throws BusinessException {
-        return getInstance(AcademicyearFacade.getStaticCurrentYear());
+        return getInstance(AcademicYearUtil.getCurrentYear());
     }
 
     public UnitInstance getInstance(Academicyear ay) throws BusinessException {

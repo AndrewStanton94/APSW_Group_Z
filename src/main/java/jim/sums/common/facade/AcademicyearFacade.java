@@ -75,31 +75,5 @@ public class AcademicyearFacade extends AbstractFacade<Academicyear> {
         }
     }
 
-    static private Academicyear currentYear = null;
-    static private Date lastChecked = null;
 
-    public Academicyear getCurrentYear() throws BusinessException {
-        Date now = new Date();
-        //TODO
-        //calculate whether currentYear needs to be refreshed
-        if (lastChecked == null || currentYear == null) {
-            for (Academicyear ay : this.findAll()) {
-                if (now.after(ay.getStartdate()) && now.before(ay.getEnddate())) {
-                    currentYear = ay;
-                    lastChecked = now;
-                    return ay;
-                }
-            }
-            throw new BusinessException("Cannot find current academic year");
-        } else {
-            return currentYear;
-        }
-    }
-
-    public static Academicyear getStaticCurrentYear() throws BusinessException {
-        if (currentYear == null) {
-            throw new BusinessException("Current year not yet set");
-        }
-        return currentYear;
-    }
 }

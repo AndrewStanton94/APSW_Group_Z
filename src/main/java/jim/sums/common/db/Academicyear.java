@@ -51,10 +51,10 @@ public class Academicyear implements Serializable {
     private Date enddate;
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDACADEMICYEAR")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDACADEMICYEAR")
     private Integer idacademicyear;
     @Basic(optional = false)
     @NotNull

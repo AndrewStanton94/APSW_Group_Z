@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import jim.sums.common.bus.BusinessException;
 import jim.sums.common.db.*;
 import jim.sums.common.facade.*;
+import jim.sums.common.util.AcademicYearUtil;
 
 /**
  *
@@ -260,18 +261,22 @@ public class InitService {
 //        academicYearNameList.add("2012-2013");
 //        academicYearNameList.add("2013-2014");
 
-        if (ayf.count() != 2) {
+       List<Academicyear> allYears = new ArrayList<Academicyear>();
+        if (ayf.count() <= 0) {
             ayf.deleteForAcademicYear();
             Academicyear academicYear;
             for (i = 2013; i < 2020; i++) {
                 academicYear = new Academicyear(i + "-" + (i+1), i);
                 ayf.create(academicYear);
+                allYears.add(academicYear);
             }
         }
 
+        AcademicYearUtil.setCurrentYear(AcademicYearUtil.findCurrentYear(allYears));
+
         int x, k;
         Long j;
-        int tab[] = {0, 4};
+        int tab[] = {0, 9999};
         Unit u;
         List<String> unitShortCodeList = new ArrayList<String>();
         unitShortCodeList.add("PJS60P");
@@ -285,9 +290,9 @@ public class InitService {
         unitCodeList.add("U21287");
         List<Unit> lu = new ArrayList<Unit>();
 
-        if (uf.count() < 4) {
+        if (uf.count() < 1) {
             uf.deleteForUnit();
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < unitCodeList.size(); i++) {
                 u = new Unit(unitShortCodeList.get(i), unitCodeList.get(i));
                 u.setUnitkind(pk.findAll().get(i));
                 u.setCourseLevel(cl.find((long) random.nextInt(cl.findAll().size() - 1) + 1));
@@ -300,10 +305,11 @@ public class InitService {
 
         UnitInstance ui;
         List<UnitInstance> lui = new ArrayList<UnitInstance>();
-        if (uif.count() < 8) {
-            for (i = 0; i < ayf.count(); i++) {
-                for (k = 0; k < 4; k++) {
-                    ui = new UnitInstance(lu.get(k), ayf.findAll().get(i));
+        int uifcount = uif.count();
+        if (uif.count() < 1) {
+            for (Academicyear ay : allYears) {
+                for (Unit ux : lu) {
+                    ui = new UnitInstance(ux, ay);
                     uif.create(ui);
                     lui.add(ui);
                 }
@@ -318,7 +324,6 @@ public class InitService {
         List<UnitInstance> unitWithoutPFirstYear = new ArrayList<UnitInstance>();
         List<UnitInstance> unitWithoutPSecondYear = new ArrayList<UnitInstance>();
         try {
-            Academicyear ay = ayf.getCurrentYear();
             unitWithPFirstYear.add(uf.findByUnitCode("PJS60P").getCurrentInstance());
             unitWithPFirstYear.add(uf.findByUnitCode("PJE60P").getCurrentInstance());
 
@@ -370,7 +375,7 @@ public class InitService {
         // Initialization of Course
         Course course;
         List<Course> lc = new ArrayList<Course>();
-        if (cf.count() < 3) {
+        if (cf.count() < 1) {
             cf.deleteForCourse();
             course = new Course("C0056S", "BSC (HONS) COMPUTER SCIENCE");
             cf.create(course);
@@ -394,7 +399,7 @@ public class InitService {
         List<Academicyear> ayl = ayf.findAll();
         if (cif.count() < 8) {
             for (Academicyear ay : ayl) {
-                for (j = 0L; j < 4L; j++) {
+                for (j = 0L; j < cl.count(); j++) {
                     List<UnitInstance> tlui = new ArrayList<UnitInstance>();
                     for (UnitInstance tui : lui) {
                         if (tui.getUnit().getCourseLevel() == cl.find(j)) {
@@ -413,7 +418,7 @@ public class InitService {
 
         // Initialization of TemplateMarkForm
         List<TemplateMarkForm> lm = new ArrayList<TemplateMarkForm>();
-        if (mf.count() < 3) {
+        if (mf.count() < 1) {
             mf.deleteForMark();
 
             TemplateMarkForm mf1 = new TemplateMarkForm(1L, "Masters Engineering Project rev2006");
