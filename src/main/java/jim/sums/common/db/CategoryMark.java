@@ -37,14 +37,14 @@ public class CategoryMark implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "CAT_MARK_ID")
     private Long catMarkId;
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "MARK")
-    private int mark;
+    private int mark = 0;
     @Size(max = 500)
     // @Column(name = "CAT_COMMENT")
     private String catComment;
@@ -86,11 +86,11 @@ public class CategoryMark implements Serializable {
     public void setWeights(List<TemplateWeightCategory> weights) {
         this.weights = weights;
     }
-    
+
     public CategoryMark(int mark, String catComment) {
         this.mark = mark;
         this.catComment = catComment;
-    } 
+    }
 
     public Long getCatMarkId() {
         return catMarkId;
@@ -108,7 +108,7 @@ public class CategoryMark implements Serializable {
         this.mark = mark;
         getMarkerId().calculateOverallMark();
     }
-    
+
     public String getCatComment() {
         return catComment;
     }
@@ -157,5 +157,5 @@ public class CategoryMark implements Serializable {
     public String toString() {
         return "jim.sums.common.db.CategoryMark[ catMarkId=" + catMarkId + " ]";
     }
-    
+
 }

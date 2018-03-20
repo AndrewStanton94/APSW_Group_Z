@@ -57,7 +57,7 @@
                         <h:outputLabel for="email" value="Email address:" />
                         <h:inputText id="email" value="#{prc.newItem.email}"  binding="#{originalEmail}" required="true" requiredMessage="You must specify an email.">
                             <f:validator validatorId="emailValidator" />
-                            <f:validator binding="#{freeEmailValidator}" />
+                            <!-- binding="{freeEmailValidator}" -->
                             <f:ajax event="blur" execute="email confirmemail" render="emailError confirmemailError" />
                         </h:inputText>
                         <h:message styleClass="error" id="emailError" for="email" />

@@ -39,10 +39,10 @@ public class Courseinstance implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDCOURSEINSTANCE")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDCOURSEINSTANCE")
     private Integer idcourseinstance;
     @Size(max = 64)
     @Column(name = "COURSEINSTANCENAME")
@@ -119,7 +119,7 @@ public class Courseinstance implements Serializable {
         }
         unitinstances.add(ui);
     }
-    
+
     public Course getCourse() {
         return course;
     }

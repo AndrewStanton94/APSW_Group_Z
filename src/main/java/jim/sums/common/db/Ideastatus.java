@@ -35,10 +35,10 @@ public class Ideastatus implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDIDEASTATUS")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDIDEASTATUS")
     private Integer idideastatus;
     @Basic(optional = false)
     @NotNull
@@ -64,7 +64,7 @@ public class Ideastatus implements Serializable {
         }
         return allIdeastatuses;
     }
-    
+
     public Ideastatus() {
     }
 

@@ -30,8 +30,8 @@ public class Finalproject implements Serializable {
     private Date actualsubmissiondate;
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
     private Long idproject;
     @Basic(optional = false)
     private String projecttitle;

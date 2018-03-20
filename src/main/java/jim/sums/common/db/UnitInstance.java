@@ -39,10 +39,10 @@ public class UnitInstance implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDUNITINSTANCE")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDUNITINSTANCE")
     private Integer idunitinstance;
     @ManyToMany(cascade = CascadeType.REMOVE, mappedBy = "unitinstanceList")
     private List<Cohort> cohortList;
@@ -148,11 +148,11 @@ public class UnitInstance implements Serializable {
     public void setFinalprojectList(List<Finalproject> finalprojectList) {
         this.finalprojectList = finalprojectList;
     }
-    
+
     public List<SubmitConfiguration> getSubmitConfigurations(){
         return submitConfigurations;
     }
-    
+
     public void setSubmitConfiguration(List<SubmitConfiguration> submitConfigurations) {
         this.submitConfigurations = submitConfigurations;
     }

@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -32,13 +31,13 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "ProjectKind.findByIdkind", query = "SELECT k FROM ProjectKind k WHERE k.idkind = :idkind"),
     @NamedQuery(name = "ProjectKind.findByKindname", query = "SELECT k FROM ProjectKind k WHERE k.kindname = :kindname")})
 public class ProjectKind implements Serializable {
-   
+
 
     private static final long serialVersionUID = 1L;
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
 //    @Column(name = "IDKIND")
     private Long idkind;
     @Basic(optional = false)
@@ -80,7 +79,7 @@ public class ProjectKind implements Serializable {
         }
         return allProjectKinds;
     }
-    
+
     public Long getIdkind() {
         return idkind;
     }
@@ -102,7 +101,7 @@ public class ProjectKind implements Serializable {
     }
 
     private final void setProjectideaList(List<Projectidea> projectideaList) {
-        /* 
+        /*
          * This is a dangerous method to make public because it could be used to
          * change a lot of ideas. See Jim before changing.
          */

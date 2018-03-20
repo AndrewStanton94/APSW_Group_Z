@@ -38,8 +38,8 @@ public class TemplateCategory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "MFCID")
     private Long mfcid;
     // @Column(name = "CATINDEX")
@@ -67,7 +67,7 @@ public class TemplateCategory implements Serializable {
     public TemplateCategory(Long mfcid) {
         this.mfcid = mfcid;
     }
-    
+
     public List<TemplateCriteria> getCriteria() {
         return criteria;
     }
@@ -156,5 +156,5 @@ public class TemplateCategory implements Serializable {
     public String toString() {
         return "jim.sums.common.db.TemplateCategory[ mfcid=" + mfcid + " ]";
     }
-    
+
 }

@@ -38,12 +38,12 @@ public class CategoryMarksOption implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CAT_MARK_OPTION_ID")
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "CAT_MARK_OPTION_ID")
     private Integer catMarkOptionId;
     @Size(max = 1)
-    @Column(name = "SELECTED")
+//    @Column(name = "SELECTED")
     private String selected;
     @JoinColumn(name = "CAT_ID", referencedColumnName = "CATID")
     @ManyToOne(optional = false)

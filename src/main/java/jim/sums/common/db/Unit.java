@@ -45,15 +45,15 @@ public class Unit implements Serializable {
     private List<UnitMarkForms> unitMarkFormsList;
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 32)
-    @Column(name = "UNITCODE")
+//    @Basic(optional = false)
+//    @NotNull
+//    @Size(min = 1, max = 32)
+//    @Column(name = "UNITCODE")
     private String unitcode;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
-    @Column(name = "UNITTITLE")
+//    @Column(name = "UNITTITLE")
     private String unittitle;
 //    @JoinColumn(name = "UNITKIND", referencedColumnName = "IDKIND")
     @ManyToOne(optional = false)

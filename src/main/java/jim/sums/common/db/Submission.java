@@ -26,7 +26,7 @@ public class Submission implements Serializable {
     private SubmitConfiguration config = null;
     @OneToOne
     private Finalproject project = null;
-    @Size(min = 0)
+//    @Size(min = 0)
     private int counter = 0;
     @ManyToOne(optional = false)
     private Person person;
@@ -81,11 +81,11 @@ public class Submission implements Serializable {
     public void setUploadfile(byte[] uploadfile) {
         this.uploadfile = uploadfile;
     }
-    
+
     public Person getPerson() {
         return person;
     }
-    
+
     public void setPerson(Person person) {
         this.person = person;
     }

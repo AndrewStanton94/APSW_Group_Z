@@ -224,7 +224,6 @@ public class InitService {
             staffPerson2.setConfirmationdate(new Date());
 
 //            pf.deleteForPerson();
-
             pf.create(adminPerson);
             pf.create(studentPerson);
             pf.create(staffPerson);
@@ -261,15 +260,17 @@ public class InitService {
 //        academicYearNameList.add("2012-2013");
 //        academicYearNameList.add("2013-2014");
 
-       List<Academicyear> allYears = new ArrayList<Academicyear>();
+        List<Academicyear> allYears = new ArrayList<Academicyear>();
         if (ayf.count() <= 0) {
             ayf.deleteForAcademicYear();
             Academicyear academicYear;
             for (i = 2013; i < 2020; i++) {
-                academicYear = new Academicyear(i + "-" + (i+1), i);
+                academicYear = new Academicyear(i + "-" + (i + 1), i);
                 ayf.create(academicYear);
                 allYears.add(academicYear);
             }
+        } else {
+            allYears = ayf.findAll();
         }
 
         AcademicYearUtil.setCurrentYear(AcademicYearUtil.findCurrentYear(allYears));
@@ -306,17 +307,21 @@ public class InitService {
         UnitInstance ui;
         List<UnitInstance> lui = new ArrayList<UnitInstance>();
         int uifcount = uif.count();
-        if (uif.count() < 1) {
+        if (uifcount < 1) {
             for (Academicyear ay : allYears) {
                 for (Unit ux : lu) {
                     ui = new UnitInstance(ux, ay);
+                    ux.getUnitinstanceList().add(ui);
+                    ay.getUnitinstanceList().add(ui);
                     uif.create(ui);
                     lui.add(ui);
                 }
             }
         } else {
-            lui = uif.findRange(tab);
+            lui = uif.findAll();
         }
+
+        uif.flush(); // save data to this point
 
         // Initialization of Cohort                 by BernardiD
         List<UnitInstance> unitWithPFirstYear = new ArrayList<UnitInstance>();

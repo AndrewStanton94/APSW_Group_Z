@@ -9,18 +9,14 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -56,14 +52,14 @@ public class MarkerMark implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "MARK_ID")
     private Long markId;
-    @Basic(optional = false)
-    @NotNull
+//    @Basic(optional = false)
+//    @NotNull
     // @Column(name = "MARK")
-    private int mark;
+    private int mark = -1;
     // @Column(name = "MARK_DATE")
     @Temporal(TemporalType.DATE)
     private Date markDate;
@@ -149,10 +145,10 @@ public class MarkerMark implements Serializable {
         for (CategoryMark cm : getCategoryMarksList()) {
             //cm.getCatId().getMarkFormCategoriesList().get(0) -this is not ok!!!!
             int catWeight = cm.getCatId().getMarkFormCategoriesList().get(0).getTemplateWeightCategory().getWeightValue();
-         
+
             if(cm.getCatId().getMarkFormCategoriesList().get(0).getCritical()!=null&& cm.getCatId().getMarkFormCategoriesList().get(0).getCritical().toString().equals("Y") && cm.getMark()<40){
-               specialCatUnderLimit=true; 
-                
+               specialCatUnderLimit=true;
+
             }
             selectedOption = selectedOption + catWeight;
             tmpResult = tmpResult + (cm.getMark() * catWeight);
@@ -190,11 +186,11 @@ public class MarkerMark implements Serializable {
         this.markId = markId;
         this.mark = mark;
     }
-    
-    public MarkerMark(int mark, Date markDate, String generalComments, 
-                 String commentsForExaminers, String generalCommentsExamboard, 
-                 String plagiarismUnfairAct, String plagiarismComments, 
-                 String unfairActNotes, Integer adjustmentApplied, 
+
+    public MarkerMark(int mark, Date markDate, String generalComments,
+                 String commentsForExaminers, String generalCommentsExamboard,
+                 String plagiarismUnfairAct, String plagiarismComments,
+                 String unfairActNotes, Integer adjustmentApplied,
                  String plagiarismSuspect, String markStatus) {
         this.mark = mark;
         this.markDate = markDate;

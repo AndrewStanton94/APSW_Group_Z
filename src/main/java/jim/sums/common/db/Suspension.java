@@ -35,10 +35,10 @@ import javax.validation.constraints.Size;
 	@NamedQuery(name = "Suspension.findByReason", query = "SELECT s FROM Suspension s WHERE s.reason = :reason")})
 public class Suspension implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDSUSPENSION")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDSUSPENSION")
     private Integer idsuspension;
     @Basic(optional = false)
     @NotNull
@@ -135,5 +135,5 @@ public class Suspension implements Serializable {
     public void setDatesuspension(Date datesuspension) {
         this.datesuspension = datesuspension;
     }
-	
+
 }

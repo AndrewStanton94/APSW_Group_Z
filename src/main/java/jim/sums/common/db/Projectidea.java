@@ -50,10 +50,10 @@ public class Projectidea implements Serializable {
     private Date submissiondate;
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDPROJECTIDEA")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDPROJECTIDEA")
     private Integer idprojectidea;
     @Basic(optional = false)
     @NotNull
@@ -73,23 +73,23 @@ public class Projectidea implements Serializable {
     @Size(max = 64)
     @Column(name = "ACADEMICQUESTION")
     private String academicquestion;
-    
+
 //    By BerardiD *******
-    
+
     @JoinTable(name = "COURSELEVEL_PROJECTIDEA", joinColumns = {
         @JoinColumn(name = "PROJECTIDEALIST_IDPROJECTIDEA", referencedColumnName = "IDPROJECTIDEA")}, inverseJoinColumns = {
         @JoinColumn(name = "GRADELIST_ID", referencedColumnName = "ID")})
     @ManyToMany
     private List<CourseLevel> gradeList;
-    
+
     @JoinTable(name = "IDEAKIND", joinColumns = {
         @JoinColumn(name = "IDPROJECTIDEA", referencedColumnName = "IDPROJECTIDEA")}, inverseJoinColumns = {
         @JoinColumn(name = "IDIDEAKIND", referencedColumnName = "IDKIND")})
     @ManyToMany
     private List<ProjectKind> kindList;
-    
+
 //   *******
-    
+
     @JoinColumn(name = "OWNERIDEA", referencedColumnName = "USERNAME")
     @ManyToOne(optional = false)
     private Person owneridea;

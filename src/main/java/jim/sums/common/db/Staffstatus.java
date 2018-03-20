@@ -35,8 +35,8 @@ public class Staffstatus implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDSTAFFSTATUS")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "IDSTAFFSTATUS")
     private Long id;
     @Basic(optional = false)
     @NotNull
@@ -57,7 +57,7 @@ public class Staffstatus implements Serializable {
 //    public Staffstatus(Integer id) {
 //        this.id = id;
 //    }
-    
+
     public Staffstatus(String statusname) {
         this.statusname = statusname;
     }

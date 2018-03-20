@@ -59,10 +59,10 @@ public class Cohort implements Serializable {
     private Date projectstop;
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IDCOHORT")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "IDCOHORT")
     private Integer idcohort;
     @Basic(optional = false)
     @NotNull
