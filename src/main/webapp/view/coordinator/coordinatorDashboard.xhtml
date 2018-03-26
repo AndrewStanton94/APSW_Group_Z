@@ -1,0 +1,93 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Coordinator Dashboard</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <p:panel>
+
+            <div style="width: 100%;">
+                <div style="float:left; width: 80%">
+                    <p>Current Mark Schemes</p>
+                </div>
+                <div style="float:right;">
+                    <h:form id="createNewSchemeForm" title="Login form" prependId="false" onsubmit="toEditMarkingScheme">
+                        <h:commandButton value="New Mark Scheme" id="nonAjax" action="/view/coordinator/editMarkingScheme.xhtml" ajax="false"/>
+                    </h:form>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+
+            <p:dataTable var="" value="">
+
+                <p:column headerText="Unit Name">
+                    <h:outputText value="Test Name" />
+                </p:column>
+
+                <p:column headerText="Year">
+                    <h:outputText value="Test Year" />
+                </p:column>
+
+                <p:column headerText="Type">
+                    <h:outputText value="Test Type" />
+                </p:column>
+
+                <p:column headerText="Level">
+                    <h:outputText value="Test Level" />
+                </p:column>
+
+                <p:column headerText="">
+                    <div align="center">
+                        <h:commandButton value="View" tabindex="3" />
+                        <h:commandButton value="Edit" tabindex="3"/>
+                    </div>
+                </p:column>
+            </p:dataTable>
+
+        </p:panel>
+        <div style="height: 40px;"></div>
+        <p:panel>
+
+            <div style="width: 100%;">
+                <div style="float:left; width: 80%">
+                    <p>Past Mark Schemes</p>
+                </div>
+                <div style="float:right;">
+                    <h:form id="searchPastSchemesForm" title="Login form" prependId="false" onsubmit="toEditMarkingScheme">
+                        <p:inputText value="Search Past Schemes"/> 
+                        <h:commandButton value="Search"/>
+                    </h:form>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+
+            <p:dataTable var="" value="">
+                <p:column headerText="Unit Name">
+                    <h:outputText value="Test Name 2" />
+                </p:column>
+
+                <p:column headerText="Year">
+                    <h:outputText value="Test Year 2" />
+                </p:column>
+
+                <p:column headerText="Type">
+                    <h:outputText value="Test Type 2" />
+                </p:column>
+
+                <p:column headerText="Level">
+                    <h:outputText value="Test Level 2" />
+                </p:column>
+
+                <p:column headerText="">
+                    <div align="center">
+                        <h:commandButton value="View" tabindex="3"/>
+                    </div>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </ui:define>
+</ui:composition>

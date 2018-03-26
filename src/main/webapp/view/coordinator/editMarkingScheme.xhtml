@@ -1,0 +1,104 @@
+<ui:composition template="/view/main_template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="top">
+        <p><h2>Coordinator Dashboard</h2></p>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+
+
+            <p:growl id="scheduleItems" showDetail="true"/>
+            <p:panel>
+                <div style="width: 100%; height:20px;">
+                    <div style="float:left; width: 80%">
+                        <p>Create New Marking Scheme</p>
+                    </div>
+                    <div style="float:right;" align="right">
+                        <h:form id="searchPastSchemesForm" title="Login form" prependId="false" onsubmit="toEditMarkingScheme">
+                            <h:commandButton value="Back"/>
+                            <h:commandButton value="Delete"/>
+                            <h:commandButton value="Preview"/>
+                            <h:commandButton value="Save"/>
+                        </h:form>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel style="width: 100%; height: 60px;">
+                <div class="row">
+                    <div class="column" style="float: left; width: 25%;">Scheme Name</div>
+                    <div class="column" style="float: left; width: 25%;">Linked Unit</div>
+                    <div class="column" style="float: left; width: 25%;">Weight of artefact</div>
+                    <div class="column" style="float: left; width: 25%;"><p:selectBooleanCheckbox/> Allow Modifier</div>
+                </div>
+
+                <div class="row">
+                    <div class="column" style="float: left; width: 25%;"><p:inputText/></div>
+                    <div class="column" style="float: left; width: 25%;"><p:inputText/></div>
+                    <div class="column" style="float: left; width: 25%;"><p:inputText/></div>
+                    <div class="column" style="float: left; width: 25%;"><p:inputText value="Max value"/></div>
+                </div>
+
+            </p:panel>
+            <div>
+                <p:dataTable id="editMarkSchemeTable" var="" value="test text for table" editable="true" editMode="cell" widgetVar="cellSchemeDescription">
+                    <f:facet name="header">
+                        <p>Edit Mark Scheme</p>
+                    </f:facet>
+
+                    <p:ajax event="cellEdit" listener="#{dtEditView.onCellEdit}" update=":form:scheduleItems" />
+
+                    <p:column headerText="0-9">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 1" /></f:facet>
+                            <f:facet name="input"><p:inputText id="modelInput" value="Test text 1" style="width:96%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="10-19">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 2" /></f:facet>
+                            <f:facet name="input"><p:inputText value="Test text 2" style="width:96%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="20-29">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 3" /></f:facet>
+                            <f:facet name="input"><p:inputText value="Test text 3" style="width:96%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="30-39">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 4" /></f:facet>
+                            <f:facet name="input"><p:inputText value="Test text 4" style="width:96%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="40-49">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 5" /></f:facet>
+                            <f:facet name="input"><p:inputText value="Test text 5" style="width:96%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="50-100">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="Test text 6" /></f:facet>
+                            <f:facet name="input"><p:inputText value="Test text 6" style="width:96%" label="Year"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                </p:dataTable>
+
+                <p:contextMenu for="editMarkSchemeTable" widgetVar="cMenu">   
+                    <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellSchemeDescription').showCellEditor();return false;"/>  
+                    <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+                </p:contextMenu>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -10,17 +10,31 @@
     <ui:define name="content">
         <p:panel>
             <p>Container login</p>
-            <h:form id="login" title="Login form" prependId="false" onsubmit="document.getElementById('login').action='j_security_check';">
-                <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
-                    <h:outputLabel value="Username:" />
-                    <h:inputText id="j_username" required="true" tabindex="1"/>
-                    <h:outputLabel value="Password:" />
-                    <h:inputSecret id="j_password" required="true" tabindex="2"/>
+            <!--            <h:form id="login" title="Login form" prependId="false" onsubmit="document.getElementById('login').action='j_security_check';">-->
+            <!--                <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
+                                <h:outputLabel value="Username:" />
+                                <h:inputText id="j_username" required="true" tabindex="1"/>
+                                <h:outputLabel value="Password:" />
+                                <h:inputSecret id="j_password" required="true" tabindex="2"/>
+            
+                                <h:commandButton value="Login" tabindex="3"/>
+                                <h:link value="Lost password?" outcome="toLostPass"/>
+                            </h:panelGrid>-->
+            <!--</h:form>-->
 
-                    <h:commandButton value="Login" tabindex="3"/>
-                    <h:link value="Lost password?" outcome="toLostPass"/>
+            <h:form id="temporaryLoginForm" title="Temporary Login Form">
+            <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
+                <h:selectOneRadio value="#{temporaryLoginController.username}">
+                    <f:selectItem itemValue="staff" itemLabel="Coordinator 1" />
+                    <f:selectItem itemValue="staff2" itemLabel="Coordinator 2" />
+                    <f:selectItem itemValue="student4" itemLabel="Supervisor 1" />
+                    <f:selectItem itemValue="student5" itemLabel="Supervisor 2" />
+                    </h:selectOneRadio>
+                    <h:commandButton value="Login" tabindex="3" action="#{temporaryLoginController.userLogin()}"/>
                 </h:panelGrid>
             </h:form>
+
+
             <!--<p>Fudge login</p>
             <h:form id="fudgelogin" title="Fudge login form">
                 <h:panelGrid id="panelLogin" columns="2" cellspacing="3">
